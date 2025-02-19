@@ -76,10 +76,6 @@ const Sidebar = () => {
     navigate(e.key);
   }
 
-  const handleMouseLeave = () => {
-    setShowType(false); // Sichqoncha divdan chiqib ketganda, showType ni false qilish
-  };
-
   return (
     <div className="z-[99]">
       <div className="">

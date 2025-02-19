@@ -2,11 +2,11 @@ import logo from "../../images/perfona.png";
 import google from "../../images/icons8-google.svg";
 import "../../App.css";
 import { Checkbox, Form, Input } from "antd";
-import { Link } from "react-router-dom";
 import { AnimatedTestimonialsDemo } from "../../components/ui/AnimatedTestimonialsDemo";
 import { useState } from "react";
 export default function Auth() {
   const [login, setLogin] = useState(false);
+  const [form] = Form.useForm();
   const handleTakeValue = (data) => {
     console.log(data);
   };
@@ -21,7 +21,7 @@ export default function Auth() {
           <div>
             <div className="w-[200px] mb-5 mt-10">
               {/* logo */}
-              <img src={logo} alt="" className="w-full h-full" />
+              <img src={logo} alt="" className="w-full h-full" loading="lazy" />
             </div>
           </div>
           {/* Form */}
@@ -33,7 +33,12 @@ export default function Auth() {
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                 </p>
                 <button className="w-full flex justify-center items-center py-2 gap-1.5 rounded-full border my-5 hover:shadow-md">
-                  <img src={google} alt="" className="w-[25px]" />
+                  <img
+                    loading="lazy"
+                    src={google}
+                    alt=""
+                    className="w-[25px]"
+                  />
                   <span className="pt-1">Login with google</span>
                 </button>
               </div>
@@ -43,12 +48,14 @@ export default function Auth() {
                 </span>
               </div>
               <div id="loginForm">
-                <Form onFinish={handleTakeValue} autoComplete="off">
+                <Form form={form} onFinish={handleTakeValue} autoComplete="off">
                   <Form.Item
                     name="phone"
                     label="Telefon raqamingiz"
                     required={true}
+                    layout="vertical"
                     className="flex flex-col"
+                    style={{ display: "block", marginBottom: "10px" }}
                   >
                     <input
                       type="text"
@@ -58,16 +65,20 @@ export default function Auth() {
                   <Form.Item
                     name="password"
                     label="Parolingiz"
+                    layout="vertical"
                     required={true}
                     className="flex flex-col"
+                    style={{ display: "block", marginBottom: "10px" }}
                   >
                     <Input.Password />
                   </Form.Item>
                   <Form.Item
                     name="rePassword"
                     label="Parolingizni takrorlang"
+                    layout="vertical"
                     required={true}
                     className="flex flex-col"
+                    style={{ display: "block", marginBottom: "10px" }}
                   >
                     <Input.Password />
                   </Form.Item>
@@ -108,7 +119,12 @@ export default function Auth() {
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                 </p>
                 <button className="w-full flex justify-center items-center py-2 gap-1.5 rounded-full border my-5 hover:shadow-md">
-                  <img src={google} alt="" className="w-[25px]" />
+                  <img
+                    loading="lazy"
+                    src={google}
+                    alt=""
+                    className="w-[25px]"
+                  />
                   <span className="pt-1">Log in with google</span>
                 </button>
               </div>
@@ -118,12 +134,18 @@ export default function Auth() {
                 </span>
               </div>
               <div id="loginForm">
-                <Form onFinish={handleTakeValueLogin} autoComplete="off">
+                <Form
+                  form={form}
+                  onFinish={handleTakeValueLogin}
+                  autoComplete="off"
+                  className="flex flex-col gap-3"
+                >
                   <Form.Item
                     name="phone"
                     label="Telefon raqamingiz"
                     required={true}
                     className="flex flex-col"
+                    layout="vertical"
                   >
                     <input
                       type="text"
@@ -133,6 +155,7 @@ export default function Auth() {
                   <Form.Item
                     name="password"
                     label="Parolingiz"
+                    layout="vertical"
                     required={true}
                     className="flex flex-col"
                   >
@@ -150,7 +173,7 @@ export default function Auth() {
                   </Form.Item>
                   <button
                     type="submit"
-                    className="pb-2.5 pt-3.5 bg-black text-white rounded-full border w-full"
+                    className="py-2.5  bg-black text-white rounded-full border w-full"
                   >
                     Accountga kirish
                   </button>

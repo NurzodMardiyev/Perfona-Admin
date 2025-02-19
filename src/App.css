@@ -1,6 +1,8 @@
 body {
   font-family: "IvyEpic", sans-serif;
   font-size: 16px;
+  src: url("./index.css") format("woff2");
+  font-display: swap;
 }
 .course_type {
   font-size: 14px;
@@ -93,7 +95,7 @@ body {
 .ant-form-item-required {
   display: block;
 }
-.ant-row.ant-form-item-row.css-dev-only-do-not-override-xex5fb {
+:where(.ant-row.ant-form-item-row.css-dev-only-do-not-override-xex5fb) {
   flex-direction: column !important;
   justify-content: start !important;
 }

@@ -3,32 +3,16 @@ import { cn } from "../../lib/utils.ts";
 import { AnimatePresence, motion } from "framer-motion";
 import React, {
   ReactNode,
-  createContext,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
+import { ModalContext, ModalProvider } from "../../context/ContextApi.tsx";
 
-interface ModalContextType {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}
-
-const ModalContext = createContext<ModalContextType | undefined>(undefined);
-
-export const ModalProvider = ({ children }: { children: ReactNode }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <ModalContext.Provider value={{ open, setOpen }}>
-      {children}
-    </ModalContext.Provider>
-  );
-};
-
-export const useModal = () => {
+const useModal = () => {
   const context = useContext(ModalContext);
+
   if (!context) {
     throw new Error("useModal must be used within a ModalProvider");
   }
@@ -96,14 +80,14 @@ export const ModalBody = ({
             opacity: 0,
             backdropFilter: "blur(0px)",
           }}
-          className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-50"
+          className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-[9999]"
         >
           <Overlay />
 
           <motion.div
             ref={modalRef}
             className={cn(
-              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
+              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-[9999] flex flex-col flex-1 overflow-hidden",
               className
             )}
             initial={{
@@ -152,25 +136,6 @@ export const ModalContent = ({
   );
 };
 
-export const ModalFooter = ({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div
-      className={cn(
-        "flex justify-end p-4 bg-gray-100 dark:bg-neutral-900",
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
-};
-
 const Overlay = ({ className }: { className?: string }) => {
   return (
     <motion.div
@@ -190,7 +155,7 @@ const Overlay = ({ className }: { className?: string }) => {
   );
 };
 
-const CloseIcon = () => {
+export const CloseIcon = () => {
   const { setOpen } = useModal();
   return (
     <button

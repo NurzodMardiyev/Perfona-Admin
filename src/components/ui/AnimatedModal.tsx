@@ -1,21 +1,55 @@
 "use client";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalTrigger,
 } from "../ui/animated-modal";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiSolidSelectMultiple } from "react-icons/bi";
+import { cn } from "../../lib/utils";
+import { ModalContext } from "../../context/ContextApi";
 
-export function AnimatedModalDemo({ collapsed }) {
+interface AnimatedModalDemoProps {
+  collapsed?: boolean;
+}
+// interface stateType {
+//   open: boolean;
+//   setOpen: (open: boolean) => void;
+// }
+
+// type ModalContextType = {
+//   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+// };
+
+// const useModal = () => {
+//   const context = useContext(ModalContext) as ModalContextType;
+
+//   if (!context) {
+//     throw new Error("useModal must be used within a ModalProvider");
+//   }
+//   return context;
+// };
+
+export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
+  // const { setOpen } = useModal();
+  const useModal = () => {
+    const context = useContext(ModalContext);
+    if (!context) {
+      throw new Error("useModal must be used within a ModalProvider");
+    }
+    return context;
+  };
+
+  const { open, setOpen } = useModal();
+  const navigate = useNavigate();
   const links = [
-    { to: "/selectCloseChanel", name: "Yopiq kanal qo'shish" },
-    { to: "/selectCourses", name: "Kurs qo'shish" },
+    { to: "/admin/select_channel", name: "Yopiq kanal qo'shish" },
+    { to: "/admin/selectCourses", name: "Kurs qo'shish" },
   ];
+
   return (
     <div className="flex items-center justify-center ">
       <Modal>
@@ -25,7 +59,7 @@ export function AnimatedModalDemo({ collapsed }) {
           }`}
         >
           <span
-            className={`group-hover/modal-btn:translate-x-60 text-center transition duration-500 ${
+            className={`group-hover/modal-btn:translate-x-60 text-center transition duration-500 italic ${
               collapsed ? "hidden" : ""
             }`}
           >
@@ -41,7 +75,10 @@ export function AnimatedModalDemo({ collapsed }) {
         </ModalTrigger>
         <ModalBody>
           <ModalContent>
-            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
+            <h4
+              className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8"
+              style={{ fontFamily: "IvyEpic, sans-serif" }}
+            >
               Siz qoʻshmoqchi boʻlgan
               <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
                 Taʻrifni
@@ -67,13 +104,17 @@ export function AnimatedModalDemo({ collapsed }) {
                   }}
                   className="rounded-xl -mr-4 mt-4 p-1 bg-white dark:bg-neutral-800 dark:border-neutral-700 border border-neutral-100 flex-shrink-0 overflow-hidden"
                 >
-                  <Link
-                    to={link.to}
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      navigate(link.to);
+                      window.location.reload();
+                    }}
                     className="w-[200px] h-[130px] flex items-center justify-center rounded-md bg-gradient-to-t  from-[#0230C7] to-[#0097FF] text-white gap-2 hover:text-white"
                   >
                     <BiSolidSelectMultiple />
                     {link.name}
-                  </Link>
+                  </button>
                 </motion.div>
               ))}
             </div>
