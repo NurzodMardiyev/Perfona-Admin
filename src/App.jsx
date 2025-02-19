@@ -2,7 +2,7 @@ import Auth from "./admin/auth/Auth";
 import MainPageAdmin from "./pages/mainPage/MainPageAdmin";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import SellectChannel from "./admin/select_type/SellectChannel";
+import SellectChannel from "./admin/select_type/SellectChannel.jsx";
 
 function App() {
   return (

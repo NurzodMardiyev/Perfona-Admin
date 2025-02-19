@@ -55,21 +55,14 @@ body {
   height: 100%;
   object-fit: cover;
 }
-.dark
-  :where(.css-dev-only-do-not-override-xex5fb).ant-form-item
-  .ant-form-item-label
-  > label,
-.dark
-  :where(.css-dev-only-do-not-override-xex5fb).ant-drawer
-  .ant-drawer-close {
+.dark .ant-form-item .ant-form-item-label > label,
+.dark .ant-drawer .ant-drawer-close {
   color: white;
 }
 .cardInput::placeholder {
   color: rgb(169, 169, 169);
 }
-:where(.css-dev-only-do-not-override-xex5fb).ant-btn-variant-text:not(
-    :disabled
-  ):not(.ant-btn-disabled):hover {
+.ant-btn-variant-text:not(:disabled):not(.ant-btn-disabled):hover {
   background: #9ca3af;
 }
 
@@ -99,16 +92,14 @@ body {
   flex-direction: column !important;
   justify-content: start !important;
 }
-:where(.css-dev-only-do-not-override-xex5fb).ant-form-item
-  .ant-form-item-label {
+.ant-form-item .ant-form-item-label {
   text-align: start !important;
 }
-:where(.css-dev-only-do-not-override-xex5fb).ant-form-horizontal
-  .ant-form-item-control {
+.ant-form-horizontal .ant-form-item-control {
   flex: none;
   border-radius: 100px;
 }
-:where(.css-dev-only-do-not-override-xex5fb).ant-form-item {
+.ant-form-item {
   margin-bottom: 10px;
 }
 
@@ -121,17 +112,17 @@ body {
   padding: 10px auto !important;
   height: 41px !important;
 }
-:where(.css-dev-only-do-not-override-xex5fb).ant-input-outlined {
+.ant-input-outlined {
   border-color: #6b7280;
   border-radius: 100px;
   height: 41px;
 }
-:where(.css-dev-only-do-not-override-xex5fb).ant-input-affix-wrapper {
+.ant-input-affix-wrapper {
   padding: 4px 11px 4px 0px !important;
 }
-:where(.css-dev-only-do-not-override-xex5fb).ant-col,
-:where(.css-dev-only-do-not-override-xex5fb).ant-checkbox-wrapper,
-:where(.css-dev-only-do-not-override-xex5fb).ant-form {
+.ant-col,
+.ant-checkbox-wrapper,
+.ant-form {
   font-family: "IvyEpic", sans-serif;
 }
 .selectType {
@@ -146,4 +137,11 @@ body {
   transition: all ease 0.4s;
   opacity: 1;
   pointer-events: auto; /* Elementga interaktivlikni yoqish */
+}
+#select_channel .ant-form-item-control input {
+  border-radius: 10px !important;
+}
+
+.ant-upload-drag .ant-upload {
+  padding: 0 !important;
 }

@@ -70,7 +70,6 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const [showType, setShowType] = useState(false);
 
   function handleClick(e) {
     navigate(e.key);
@@ -117,19 +116,6 @@ const Sidebar = () => {
                 </span>
               </Link>
             </div>
-            {/* <div
-              className={`absolute top-0 right-0 bg-gray-300 flex flex-col gap-3 p-5 showTypeSelect ${
-                showType ? "selectType" : ""
-              }`}
-              onMouseLeave={handleMouseLeave} // Sichqoncha divdan chiqib ketganda ishlaydi
-            >
-              <button className="px-10 py-2 rounded-md bg-slate-100">
-                Yopiq kanal qoʻshish
-              </button>
-              <button className="px-10 py-2 rounded-md bg-slate-100">
-                Kurs qoʻshish
-              </button>
-            </div> */}
           </div>
 
           <Button
