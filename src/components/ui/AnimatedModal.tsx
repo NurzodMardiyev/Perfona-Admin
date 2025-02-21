@@ -47,7 +47,7 @@ export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
   const navigate = useNavigate();
   const links = [
     { to: "/admin/select_channel", name: "Yopiq kanal qo'shish" },
-    { to: "/admin/selectCourses", name: "Kurs qo'shish" },
+    { to: "/admin/select_course", name: "Kurs qo'shish" },
   ];
 
   return (

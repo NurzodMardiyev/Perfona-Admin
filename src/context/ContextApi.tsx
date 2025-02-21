@@ -5,6 +5,8 @@ import React, { createContext, useState, ReactNode, useEffect } from "react";
 interface ModalContextType {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Kontekstni yaratish
@@ -15,9 +17,11 @@ export const ModalContext = createContext<ModalContextType | undefined>(
 // ModalProvider komponenti
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  console.log(collapsed);
 
   return (
-    <ModalContext.Provider value={{ open, setOpen }}>
+    <ModalContext.Provider value={{ open, setOpen, collapsed, setCollapsed }}>
       {children}
     </ModalContext.Provider>
   );

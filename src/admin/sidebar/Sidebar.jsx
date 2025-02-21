@@ -1,34 +1,21 @@
-import { useState } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
-import { Button, Layout, Menu, theme } from "antd";
-const { Header, Sider, Content } = Layout;
+import { useContext, useState } from "react";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Button, Layout, Menu } from "antd";
+const { Sider } = Layout;
 import "../../App.css";
 
 import { FaTrashAlt } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { RiChatVoiceFill } from "react-icons/ri";
-import { MdPermMedia } from "react-icons/md";
-import { IoSchoolSharp } from "react-icons/io5";
-import { SiMaterialformkdocs } from "react-icons/si";
-import { BsPersonLinesFill } from "react-icons/bs";
-import { FaFacebookMessenger } from "react-icons/fa";
-import { AiFillProject } from "react-icons/ai";
-import { SiLevelsdotfyi } from "react-icons/si";
 import { FaStubber } from "react-icons/fa6";
-import { SiGooglenews } from "react-icons/si";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatedModalDemo } from "../../components/ui/AnimatedModal";
+import { ModalContext } from "../../context/ContextApi";
 
 const items = [
   {
-    key: "/admin/add",
+    key: "/admin/dashboard",
     label: "Bosh Sahifa",
     icon: <MdDashboard />,
   },
@@ -67,7 +54,7 @@ const items = [
 ];
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, setCollapsed } = useContext(ModalContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -77,7 +64,7 @@ const Sidebar = () => {
 
   return (
     <div className="z-[99]">
-      <div className="">
+      <div className="fixed ">
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="demo-logo-vertical " />
           <Menu

@@ -5,7 +5,7 @@ import { TiUpload } from "react-icons/ti";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 const { Dragger } = Upload;
 
-export default function SellectChannel() {
+export default function SellectCourse() {
   const onFinish = (data) => {
     console.log(data);
   };
@@ -32,14 +32,14 @@ export default function SellectChannel() {
 
   return (
     <div>
-      <div className="container max-w-9xl mx-auto md:px-4 px-2 ">
-        <h1 className="text-[28px] font-medium  mb-3">Yopiq kanal qoʻshish</h1>
+      <div className="container max-w-9xl mx-auto md:px-4 px-2 h-[4000px]">
+        <h1 className="text-[28px] font-medium  mb-3">Kurs qoʻshish</h1>
         <div>
           <Form name="select_channel" onFinish={onFinish}>
             <Flex gap={30} className="w-full">
               <Col span={11}>
                 <Form.Item
-                  label="Kanal linki"
+                  label="Kurs linki"
                   name="link"
                   layout="vertical"
                   rules={[
@@ -66,7 +66,7 @@ export default function SellectChannel() {
             <Flex gap={30} className="w-full mt-8">
               <Col span={11}>
                 <Form.Item
-                  label="Kanal haqida"
+                  label="Kurs haqida"
                   name="description"
                   layout="vertical"
                 >
@@ -75,7 +75,7 @@ export default function SellectChannel() {
               </Col>
               <Col span={11} height={41}>
                 <Form.Item
-                  label="Kanal haqida video link"
+                  label="Kurs haqida video link"
                   name="videoLink"
                   layout="vertical"
                   rules={[
@@ -93,64 +93,13 @@ export default function SellectChannel() {
             <Flex gap={30} className="w-full mt-8">
               <Col span={11}>
                 <Form.Item
-                  name="tariffName"
-                  label="Tarif qo'shsih"
+                  name="coursePrice"
+                  label="Kurs narxi"
                   style={{
                     marginBottom: 10,
                   }}
                 >
-                  <Form.List name="tariffName">
-                    {(fields, { add, remove }) => (
-                      <>
-                        {fields.map(({ key, name, ...restField }) => (
-                          <Space
-                            key={key}
-                            style={{
-                              marginBottom: 0,
-                            }}
-                            align="baseline"
-                            className="w-full grid grid-cols-2 relative items-center"
-                          >
-                            <Form.Item
-                              {...restField}
-                              name={[name, "key"]}
-                              className="col-span-1 mb-1"
-                            >
-                              <Input
-                                placeholder="Tarif nomini kiriting!"
-                                className="selectForm"
-                              />
-                            </Form.Item>
-                            <Form.Item
-                              {...restField}
-                              name={[name, "value"]}
-                              className="col-span-1 mb-1"
-                            >
-                              <Input
-                                placeholder="Ta'rif narxini kiriting!"
-                                className="selectForm"
-                              />
-                            </Form.Item>
-                            <MinusCircleOutlined
-                              onClick={() => remove(name)}
-                              className="absolute z-10 top-4 right-1"
-                            />
-                          </Space>
-                        ))}
-                        <Form.Item>
-                          <Button
-                            type=""
-                            onClick={() => add()}
-                            icon={<PlusOutlined />}
-                            className="py-2 h-[41px]"
-                            style={{ heigth: "41px", width: "100%" }}
-                          >
-                            Qoʻshish
-                          </Button>
-                        </Form.Item>
-                      </>
-                    )}
-                  </Form.List>
+                  <Input type="text" className="w-full selectForm" />
                 </Form.Item>
               </Col>
             </Flex>
@@ -158,7 +107,7 @@ export default function SellectChannel() {
               <Col span={23}>
                 <button
                   style={{ borderRadius: "8px" }}
-                  className="py-2.5 mb-4 w-full bg-gradient-to-t from-[#0230C7] to-[#0097FF] border raunded-md text-white hover:shadow-md "
+                  className="py-2.5 mb-4 w-full bg-gradient-to-t from-[#0230C7] to-[#0097FF] border raunded-md text-white"
                 >
                   Yuborish
                 </button>

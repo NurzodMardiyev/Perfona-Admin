@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
 body {
   font-family: "IvyEpic", sans-serif;
   font-size: 16px;
@@ -139,9 +141,38 @@ body {
   pointer-events: auto; /* Elementga interaktivlikni yoqish */
 }
 #select_channel .ant-form-item-control input {
-  border-radius: 10px !important;
+  border-radius: 8px !important;
 }
 
 .ant-upload-drag .ant-upload {
   padding: 0 !important;
+}
+.ant-form-item-vertical .ant-form-item-label > label {
+  font-style: italic !important;
+}
+.ant-form-item .ant-form-item-label > label {
+  font-style: italic !important;
+}
+.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 0px;
+  border: 0px;
+  width: 100%;
+  background: #f2f7ff;
+  padding: 20px;
+  cursor: pointer !important;
+}
+.ant-select .ant-select-arrow {
+  margin-top: 0;
+}
+.ant-select .ant-select-selection-wrap {
+  cursor: text;
+}
+.ant-select .ant-select-selection-placeholder {
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.dashboard {
+  font-family: "Outfit", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
