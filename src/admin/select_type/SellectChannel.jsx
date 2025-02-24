@@ -95,6 +95,7 @@ export default function SellectChannel() {
                 <Form.Item
                   name="tariffName"
                   label="Tarif qo'shsih"
+                  layout="vertical"
                   style={{
                     marginBottom: 10,
                   }}

@@ -95,6 +95,7 @@ export default function SellectCourse() {
                 <Form.Item
                   name="coursePrice"
                   label="Kurs narxi"
+                  layout="vertical"
                   style={{
                     marginBottom: 10,
                   }}
