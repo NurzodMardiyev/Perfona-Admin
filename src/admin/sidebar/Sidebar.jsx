@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Button, Layout, Menu } from "antd";
 const { Sider } = Layout;
@@ -79,7 +79,7 @@ const Sidebar = () => {
         <Layout>
           <div></div>
           <div
-            className={`absolute bottom-[64px] bg-gradient-to-t from-[#0230C7] to-[#0097FF] p-5`}
+            className={`absolute bottom-[64px] bg-gradient-to-t from-[#0230C7] to-[#0097FF] p-5 transition-all duration-150`}
             style={{
               fontSize: "16px",
               width: collapsed ? 80 : 300,
@@ -88,7 +88,7 @@ const Sidebar = () => {
           >
             <div>
               <p
-                className={`text-white text-[16px] text-center pb-2 ${
+                className={`text-white text-[16px] text-center pb-2 transition-all duration-150 ${
                   collapsed ? "hidden" : ""
                 }`}
               >
@@ -109,7 +109,7 @@ const Sidebar = () => {
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
-            className={`absolute bottom-0 bg-gray-200 hover:bg-gray-500 `}
+            className={`absolute bottom-0 bg-gray-200 hover:bg-gray-500 transition-all duration-150 `}
             style={{
               fontSize: "16px",
 

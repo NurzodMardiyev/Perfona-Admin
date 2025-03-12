@@ -2,6 +2,8 @@ import { Select } from "antd";
 import DailyLineChart from "../../components/reCharts/DailyLineChart";
 import "../../App.css";
 import WeeklyBarChart from "../../components/reCharts/WeeklyBarChart";
+import Metriks from "../../components/metriks_&_testemonials/Metriks";
+import TestemonialsStat from "../../components/metriks_&_testemonials/TestemonialsStat";
 
 export default function Dashboard() {
   const onChange = (value) => {
@@ -66,6 +68,19 @@ export default function Dashboard() {
                 </div>
                 <WeeklyBarChart />
               </div>
+            </div>
+
+            {/* Metriks */}
+            <div className="grid grid-cols-12 gap-3 mb-10">
+              <Metriks />
+              <Metriks />
+              <Metriks />
+              <Metriks />
+            </div>
+
+            {/* chesni odziflar */}
+            <div className=" mb-10">
+              <TestemonialsStat />
             </div>
           </div>
           <div className="col-span-4 border h-20 ">oal</div>

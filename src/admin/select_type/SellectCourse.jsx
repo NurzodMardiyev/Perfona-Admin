@@ -1,8 +1,7 @@
-import { Col, Input, Form, Flex, Button, Space } from "antd";
+import { Col, Input, Form, Flex } from "antd";
 import "../../App.css";
 import { message, Upload } from "antd";
 import { TiUpload } from "react-icons/ti";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 const { Dragger } = Upload;
 
 export default function SellectCourse() {

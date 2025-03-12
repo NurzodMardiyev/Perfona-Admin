@@ -54,7 +54,7 @@ export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
     <div className="flex items-center justify-center ">
       <Modal>
         <ModalTrigger
-          className={`bg-black dark:bg-white dark:text-black text-white flex justify-center group/modal-btn w-full ${
+          className={`bg-black dark:bg-white dark:text-black text-white flex justify-center group/modal-btn w-full transition-all duration-150 ${
             collapsed ? "h-[30px]" : ""
           }`}
         >
