@@ -15,11 +15,13 @@ export default function MainPageAdmin() {
         </div>
         <div className=" lg:max-w-[2560px] md:max-w-[1600px]  mx-auto flex z-[999]">
           {/* <SidebarJS className="z-10 " /> */}
-          <Sidebar className="z-10" />
+          <div className="z-10 hidden md:block">
+            <Sidebar className=" " />
+          </div>
           <div
             className={`${
               collapsed ? "md:ms-[100px]" : "md:ms-[320px]"
-            } transition-all duration-150 ms-[50px] md:me-[20px] me-[10px] md:pt-24 pt-14 flex-1`}
+            } transition-all duration-150 ms-[0px]  md:me-[20px]  md:pt-24 pt-14 flex-1`}
           >
             <Outlet />
           </div>

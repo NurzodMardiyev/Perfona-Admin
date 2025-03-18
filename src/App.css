@@ -150,6 +150,40 @@ body {
 .ant-form-item-vertical .ant-form-item-label > label {
   font-style: italic !important;
 }
+#auth .login {
+  padding: 0px 40px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .ant-form-item-vertical .ant-form-item-label > label {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .ant-form-item .ant-form-item-label {
+    padding-bottom: 4px;
+  }
+  #auth .login {
+    padding: 0px 10px !important;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  #auth {
+    flex-direction: column !important;
+  }
+  #auth > div {
+    width: 100% !important;
+  }
+  #auth .login {
+    padding: 0px !important;
+  }
+}
+@media screen and (min-width: 1024px) and (max-width: 1280px) {
+  #auth .login {
+    padding: 0px !important;
+  }
+}
+
 .ant-form-item .ant-form-item-label > label {
   font-style: italic !important;
 }

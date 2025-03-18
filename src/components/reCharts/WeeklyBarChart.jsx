@@ -74,7 +74,7 @@ export default function WeeklyBarChart() {
           />
         </BarChart>
       </ResponsiveContainer>
-      <div className="flex justify-between  text-gray-500 text-sm h-[100px] ">
+      <div className="w-full flex justify-between  text-gray-500 text-sm h-[100px] ">
         <div className="flex gap-2 items-center">
           <div className="w-[60px] h-[40px] rounded-md bg-[#F2F7FF]"></div>
           <div className="flex flex-col">

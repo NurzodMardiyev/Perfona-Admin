@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import logo from "../../images/perfona.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
@@ -21,6 +27,8 @@ import { BsPersonLinesFill } from "react-icons/bs";
 import { FaFacebookMessenger } from "react-icons/fa";
 import { AiFillProject } from "react-icons/ai";
 import { SiLevelsdotfyi } from "react-icons/si";
+import { AnimatedModalDemo } from "../../components/ui/AnimatedModal";
+import { ModalContext } from "../../context/ContextApi";
 // import { ip } from "../../ips";
 
 export default function Header() {
@@ -32,6 +40,7 @@ export default function Header() {
   const loaction = useLocation();
   const [notifications, setNotifications] = useState([]);
   const [notif, setNotif] = useState(2);
+  const { collapsed, setCollapsed } = useContext(ModalContext);
 
   const onClose = () => {
     setOpen(false);
@@ -65,13 +74,16 @@ export default function Header() {
 
   return (
     <div className="dark:bg-gray-800 fixed top-0 bg-gray-100 w-full z-[109] shadow-md ">
-      <div className="header-wrapper container lg:max-w-[2560px] md:max-w-[1600px]  mx-auto flex justify-between py-4 md:px-5  w-full">
+      <div className="header-wrapper container lg:max-w-[2560px] md:max-w-[1600px]  mx-auto flex justify-between py-4 md:px-5 px-[20px]  w-full">
         <div className="logpSection flex gap-6 items-center ">
           <Link to="/" className="logo ">
             <img className="w-full h-[35px] " src={logo} alt="perfona" />
           </Link>
         </div>
         <div className="loginSection flex items-center">
+          <div>
+            <AnimatedModalDemo collapsed={collapsed} />
+          </div>
           <div className="flex items-center relative">
             <button
               type="button"
@@ -96,12 +108,16 @@ export default function Header() {
             open={open}
             className="dark:bg-gray-700 dark:text-white w-full"
           ></Drawer>
-          <div className="darkMode flex items-center">
+          <div className="darkMode hidden  md:flex items-center">
             <Flowbite>
               <DarkThemeToggle />
             </Flowbite>
           </div>
-          <Menu as="div" className="relative md:ml-0 md:mr-4  mx-3">
+
+          <Menu
+            as="div"
+            className="relative md:ml-0 md:mr-4 hidden md:block  mx-3"
+          >
             <div>
               <MenuButton className="relative flex text-sm focus:outline-none rounded-l-lg md:border-r">
                 <span className="sr-only">Open user menu</span>
@@ -141,6 +157,7 @@ export default function Header() {
                 ))}
             </MenuItems>
           </Menu>
+
           <div
             className="responsiveMenu relative md:hidden  ps-3 py-1"
             ref={menuRef}
@@ -149,113 +166,15 @@ export default function Header() {
               {show ? (
                 <GiHamburgerMenu
                   onClick={handleShowMenu}
-                  className="dark:text-white"
+                  className="dark:text-white text-[22px]"
                 />
               ) : (
                 <IoCloseSharp
                   onClick={handleShowMenu}
-                  className="dark:text-white"
+                  className="dark:text-white text-[22px]"
                 />
               )}
             </Link>
-
-            <div
-              className={`responsive ${
-                show
-                  ? "h-0 opacity-0 translate-y-[-100%] z-0 hidden"
-                  : "h-[167px] opacity-100 translate-y-[0] z-[90] "
-              } absolute right-0 w-[120px] mt-3 shadow-md px-3 rounded-b-sm transition-all duration-150 bg-white dark:bg-gray-800`}
-            >
-              <div className="loginOrSignUp flex items-start mt-1 mb-3">
-                <Menu as="div" className="relative ml-3">
-                  <div>
-                    <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-1.5" />
-                      <span className="sr-only">Open user menu</span>
-                      <img
-                        alt=""
-                        // src={profileImgage}
-                        className="h-8 w-8 rounded-full"
-                      />
-                    </MenuButton>
-                  </div>
-                  <MenuItems
-                    transition
-                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                  >
-                    <MenuItem>
-                      <Link
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-                      >
-                        Your Profile
-                      </Link>
-                    </MenuItem>
-                    <MenuItem>
-                      <Link
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-                      >
-                        Settings
-                      </Link>
-                    </MenuItem>
-                    <MenuItem>
-                      <Link
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-                      >
-                        Sign out
-                      </Link>
-                    </MenuItem>
-                  </MenuItems>
-                </Menu>
-              </div>
-            </div>
-          </div>
-
-          <div className="loginOrSignUp md:flex items-center gap-2 hidden">
-            <Menu as="div" className="relative ml-3">
-              <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
-                  <img
-                    alt=""
-                    // src={base64Image}
-                    className="h-8 w-8 rounded-full"
-                  />
-                </MenuButton>
-              </div>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800  py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-              >
-                <MenuItem>
-                  <Link
-                    to="/profile"
-                    className="block px-4 py-2 text-sm dark:text-white hover:dark:bg-gray-700 text-gray-700 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700"
-                  >
-                    Your Profile
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link
-                    href="#"
-                    className="block px-4 py-2 text-sm dark:text-white hover:dark:bg-gray-700 text-gray-700 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700"
-                  >
-                    Settings
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link
-                    href="#"
-                    className="block px-4 py-2 text-sm dark:text-white hover:dark:bg-gray-700 text-gray-700 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700"
-                  >
-                    Sign out
-                  </Link>
-                </MenuItem>
-              </MenuItems>
-            </Menu>
           </div>
         </div>
       </div>

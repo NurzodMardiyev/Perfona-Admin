@@ -29,7 +29,8 @@ export default function DailyLineChart() {
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
           data={data}
-          margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+          className="mt-[20px] mr-[30px] ml-[0px] mb-[20px]"
+          // margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
         >
           <defs>
             <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">

@@ -4,50 +4,71 @@ import "../../App.css";
 import { Checkbox, Form, Input } from "antd";
 import { AnimatedTestimonialsDemo } from "../../components/ui/AnimatedTestimonialsDemo";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { PerfonaAdmin } from "../../feature/queries";
 export default function Auth() {
   const [login, setLogin] = useState(false);
   const [form] = Form.useForm();
+
+  const queryClient = useQueryClient();
+  const sendValueRegister = useMutation(
+    (obj) => PerfonaAdmin.authRegister(obj),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries();
+        console.log(data);
+      },
+      onError: () => {
+        console.log("Mutation  Xato");
+      },
+    }
+  );
+
+  const sendValueLogin = useMutation((obj) => PerfonaAdmin.authLogin(obj), {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries();
+      console.log(data);
+    },
+    onError: () => {
+      console.log("Mutation  Xato");
+    },
+  });
+
   const handleTakeValue = (data) => {
     console.log(data);
+    sendValueRegister.mutate(data);
   };
   const handleTakeValueLogin = (data) => {
     console.log(data);
+    sendValueLogin.mutate(data);
   };
   return (
     <div>
-      <div className="container max-w-9xl mx-auto flex items-center justify-between flex-col md:flex-row gap-6 md:h-[100vh]">
+      <div
+        id="auth"
+        className="container max-w-9xl mx-auto flex items-center justify-between flex-col md:flex-row gap-6 md:h-[100vh] "
+      >
         {/* login or Sign up page */}
-        <div className="login flex flex-col md:w-1/2 w-full px-[10px] md:px-auto ">
+        <div className="login flex flex-col md:w-1/2 w-full md:px-auto ">
           <div>
-            <div className="w-[200px] mb-5 mt-10">
+            <div className="md:w-[200px] w-[160px] mb-5 mt-10">
               {/* logo */}
               <img src={logo} alt="" className="w-full h-full" loading="lazy" />
             </div>
           </div>
           {/* Form */}
           {login ? (
-            <div className="flex justify-center flex-col text-center md:px-20">
-              <div>
-                <h1 className="text-[32px] font-[500]">Roʻyhatdan oʻtish</h1>
-                <p className="text-[#979797]">
+            <div className="flex justify-center flex-col text-center ">
+              <div className="mb-3">
+                <h1 className="md:text-[32px] text-[24px] font-[500]">
+                  Roʻyhatdan oʻtish
+                </h1>
+                <p className="text-[#979797] md:text-[1rem] text-[0.85rem]">
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                 </p>
-                <button className="w-full flex justify-center items-center py-2 gap-1.5 rounded-full border my-5 hover:shadow-md">
-                  <img
-                    loading="lazy"
-                    src={google}
-                    alt=""
-                    className="w-[25px]"
-                  />
-                  <span className="pt-1">Login with google</span>
-                </button>
               </div>
-              <div className="flex">
-                <span className="or flex items-center justify-center w-full gap-3">
-                  or
-                </span>
-              </div>
-              <div id="loginForm">
+
+              <div id="registerForm" className="mt-3">
                 <Form form={form} onFinish={handleTakeValue} autoComplete="off">
                   <Form.Item
                     name="phone"
@@ -89,7 +110,9 @@ export default function Auth() {
                     label={null}
                     className="w-full flex items-start"
                   >
-                    <Checkbox>Qoidalarni qabul qilish</Checkbox>
+                    <Checkbox className="text-[13px] md:text-[14px]">
+                      Qoidalarni qabul qilish
+                    </Checkbox>
                   </Form.Item>
                   <button
                     type="submit"
@@ -104,7 +127,7 @@ export default function Auth() {
                         onClick={() => setLogin(false)}
                         className="text-blue-500"
                       >
-                        Kirish
+                        Accountga kirish
                       </button>
                     </p>
                   </div>
@@ -112,13 +135,18 @@ export default function Auth() {
               </div>
             </div>
           ) : (
-            <div className="flex justify-center flex-col text-center md:px-20">
-              <div>
-                <h1 className="text-[32px] font-[500]">Accountga kirish</h1>
-                <p className="text-[#979797]">
+            <div
+              id="loginForm"
+              className="flex justify-center flex-col text-center"
+            >
+              <div className="mb-3">
+                <h1 className=" font-[500] md:text-[32px] text-[24px] ">
+                  Accountga kirish
+                </h1>
+                <p className="text-[#979797] md:text-[1rem] text-[0.85rem]">
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                 </p>
-                <button className="w-full flex justify-center items-center py-2 gap-1.5 rounded-full border my-5 hover:shadow-md">
+                {/* <button className="w-full flex justify-center items-center py-2 gap-1.5 rounded-full border my-5 hover:shadow-md">
                   <img
                     loading="lazy"
                     src={google}
@@ -126,14 +154,14 @@ export default function Auth() {
                     className="w-[25px]"
                   />
                   <span className="pt-1">Log in with google</span>
-                </button>
+                </button> */}
               </div>
-              <div className="flex">
+              {/* <div className="flex">
                 <span className="or flex items-center justify-center w-full gap-3">
                   or
                 </span>
-              </div>
-              <div id="loginForm">
+              </div> */}
+              <div className="mt-3">
                 <Form
                   form={form}
                   onFinish={handleTakeValueLogin}
@@ -163,7 +191,7 @@ export default function Auth() {
                   </Form.Item>
 
                   <Form.Item
-                    name="provicy"
+                    // name="provicy"
                     // required={true}
                     valuePropName="checked"
                     label={null}
@@ -196,9 +224,6 @@ export default function Auth() {
         <div className="flex flex-col md:w-1/2 w-[67%] ">
           <AnimatedTestimonialsDemo />
         </div>
-
-        {/* Picture section */}
-        <div></div>
       </div>
     </div>
   );

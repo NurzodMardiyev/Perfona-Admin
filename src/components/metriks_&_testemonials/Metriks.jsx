@@ -3,7 +3,7 @@ import { RiPieChart2Fill } from "react-icons/ri";
 export default function Metriks() {
   return (
     <>
-      <div className="col-span-3  shadow-md  p-5 bg-[#F2F8FF] rounded-sm">
+      <div className="md:col-span-3 col-span-6  shadow-md  p-5 bg-[#F2F8FF] rounded-sm">
         <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center bg-[#EFEFFD] text-[23px]">
           <RiPieChart2Fill />
         </div>
