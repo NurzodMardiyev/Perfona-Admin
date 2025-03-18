@@ -6,6 +6,7 @@ import { AnimatedTestimonialsDemo } from "../../components/ui/AnimatedTestimonia
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { PerfonaAdmin } from "../../feature/queries";
+import { Link } from "react-router-dom";
 export default function Auth() {
   const [login, setLogin] = useState(false);
   const [form] = Form.useForm();
@@ -199,12 +200,13 @@ export default function Auth() {
                   >
                     <Checkbox>Qoidalarni qabul qilish</Checkbox>
                   </Form.Item>
-                  <button
+                  <Link
+                    to="/admin/dashboard"
                     type="submit"
                     className="py-2.5  bg-black text-white rounded-full border w-full"
                   >
                     Accountga kirish
-                  </button>
+                  </Link>
                   <div className="flex items-start mt-4">
                     <p>
                       Agar sizda account mavjudmi?{" "}
