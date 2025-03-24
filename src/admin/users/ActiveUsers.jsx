@@ -93,6 +93,12 @@ const columns = [
     dataIndex: "address",
     key: "address",
   },
+
+  {
+    title: "To'lov summasi",
+    dataIndex: "address",
+    key: "address",
+  },
   {
     title: "Status",
     key: "tags",
