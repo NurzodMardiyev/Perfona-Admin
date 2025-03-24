@@ -105,7 +105,7 @@ body {
   margin-bottom: 10px;
 }
 
-.ant-form-item-control input {
+#auth .ant-form-item-control input {
   border-radius: 100px !important;
   padding-left: 20px !important;
 }
@@ -209,4 +209,11 @@ body {
   font-family: "Outfit", serif;
   font-optical-sizing: auto;
   font-style: normal;
+}
+.ant-tag {
+  font-size: 13px;
+}
+#users .ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover {
+  background: linear-gradient(90deg, #0230c7, #0097ff);
+  color: #fff;
 }

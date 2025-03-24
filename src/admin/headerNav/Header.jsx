@@ -81,7 +81,7 @@ export default function Header() {
           </Link>
         </div>
         <div className="loginSection flex items-center">
-          <div>
+          <div className="block md:hidden">
             <AnimatedModalDemo collapsed={collapsed} />
           </div>
           <div className="flex items-center relative">

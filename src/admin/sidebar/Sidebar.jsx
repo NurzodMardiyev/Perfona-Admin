@@ -20,21 +20,10 @@ const items = [
     icon: <MdDashboard />,
   },
   {
-    key: "sub2",
+    key: "/admin/users",
     label: "Foydalanuvchilar",
     icon: <RiChatVoiceFill />,
-    children: [
-      {
-        key: "/active_users",
-        label: "Active foydalanuvchilar",
-      },
-      {
-        key: "/passiv_users",
-        label: "Obunani bekor qilganlar",
-      },
-    ],
   },
-
   {
     key: "/admin/lessons",
     label: "Barcha Darsliklar",
