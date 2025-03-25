@@ -5,11 +5,15 @@ import "./App.css";
 import SellectChannel from "./admin/select_type/SellectChannel.jsx";
 import SellectCourse from "./admin/select_type/SellectCourse.jsx";
 import Dashboard from "./admin/dashboard/Dashboard.jsx";
-import ActiveUsers from "./admin/users/Activeusers.jsx";
+import ActiveUsers from "./admin/users/Users.jsx";
+import TokenRefresher from "./admin/auth/TokenRefresh.js";
 
 function App() {
+  // console.log(refresh);
+
   return (
     <div>
+      <TokenRefresher />
       <Routes>
         <Route path="/" element={<Auth />} />
         <Route path="/admin" element={<MainPageAdmin />}>

@@ -23,6 +23,7 @@
     "react-icons": "^5.4.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^7.1.5",
+    "react-secure-storage": "^1.3.2",
     "recharts": "^2.15.1",
     "tailwind-merge": "^3.0.1"
   },

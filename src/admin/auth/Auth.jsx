@@ -6,18 +6,20 @@ import { AnimatedTestimonialsDemo } from "../../components/ui/AnimatedTestimonia
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { PerfonaAdmin } from "../../feature/queries";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function Auth() {
   const [login, setLogin] = useState(false);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
   const sendValueRegister = useMutation(
     (obj) => PerfonaAdmin.authRegister(obj),
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries();
-        console.log(data);
+        navigate("admin/dashboard");
+        console.log("Access olindi");
       },
       onError: () => {
         console.log("Mutation  Xato");
@@ -26,9 +28,10 @@ export default function Auth() {
   );
 
   const sendValueLogin = useMutation((obj) => PerfonaAdmin.authLogin(obj), {
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries();
-      console.log(data);
+      navigate("admin/dashboard");
+      console.log("Access olindi Loginniki");
     },
     onError: () => {
       console.log("Mutation  Xato");
@@ -95,7 +98,7 @@ export default function Auth() {
                     <Input.Password />
                   </Form.Item>
                   <Form.Item
-                    name="rePassword"
+                    name="repassword"
                     label="Parolingizni takrorlang"
                     layout="vertical"
                     required={true}
@@ -104,7 +107,7 @@ export default function Auth() {
                   >
                     <Input.Password />
                   </Form.Item>
-                  <Form.Item
+                  {/* <Form.Item
                     name="provicy"
                     // required={true}
                     valuePropName="checked"
@@ -114,7 +117,7 @@ export default function Auth() {
                     <Checkbox className="text-[13px] md:text-[14px]">
                       Qoidalarni qabul qilish
                     </Checkbox>
-                  </Form.Item>
+                  </Form.Item> */}
                   <button
                     type="submit"
                     className="pb-2.5 pt-3.5 bg-black text-white rounded-full border w-full"
@@ -191,7 +194,7 @@ export default function Auth() {
                     <Input.Password />
                   </Form.Item>
 
-                  <Form.Item
+                  {/* <Form.Item
                     // name="provicy"
                     // required={true}
                     valuePropName="checked"
@@ -199,14 +202,14 @@ export default function Auth() {
                     className="w-full flex items-start"
                   >
                     <Checkbox>Qoidalarni qabul qilish</Checkbox>
-                  </Form.Item>
-                  <Link
-                    to="/admin/dashboard"
+                  </Form.Item> */}
+                  <button
+                    // to="/admin/dashboard"
                     type="submit"
                     className="py-2.5  bg-black text-white rounded-full border w-full"
                   >
                     Accountga kirish
-                  </Link>
+                  </button>
                   <div className="flex items-start mt-4">
                     <p>
                       Agar sizda account mavjudmi?{" "}
