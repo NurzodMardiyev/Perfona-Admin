@@ -15,8 +15,8 @@ function App() {
     <div>
       <TokenRefresher />
       <Routes>
-        <Route path="/" element={<Auth />} />
-        <Route path="/admin" element={<MainPageAdmin />}>
+        <Route path="/admin" element={<Auth />} />
+        <Route path="admin" element={<MainPageAdmin />}>
           <Route path="select_channel" element={<SellectChannel />} />
           <Route path="select_course" element={<SellectCourse />} />
           <Route path="dashboard" element={<Dashboard />} />

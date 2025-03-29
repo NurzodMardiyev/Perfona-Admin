@@ -12,7 +12,7 @@ const TokenRefresher = () => {
       }
 
       try {
-        const response = await api.post("/account/api/token/refresh/", {
+        const response = await api.post("/api/account/token/refresh/", {
           refresh: refreshToken,
         });
         console.log(response.data);

@@ -51,7 +51,9 @@ export const ModalBody = ({
   children: ReactNode;
   className?: string;
 }) => {
-  const { open } = useModal();
+  const { open, setOpen } = useModal();
+
+  console.log(open);
 
   useEffect(() => {
     if (open) {
@@ -61,9 +63,8 @@ export const ModalBody = ({
     }
   }, [open]);
 
-  const modalRef = useRef(null);
-  const { setOpen } = useModal();
-  useOutsideClick(modalRef, () => setOpen(false));
+  // const modalRef = useRef(null);
+  // useOutsideClick(modalRef, () => setOpen(false));
 
   return (
     <AnimatePresence>
@@ -81,15 +82,21 @@ export const ModalBody = ({
             backdropFilter: "blur(0px)",
           }}
           className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-[9999]"
+          onClick={() => {
+            setOpen(false);
+          }}
         >
           <Overlay />
 
           <motion.div
-            ref={modalRef}
+            // ref={modalRef}
             className={cn(
               "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-[9999] flex flex-col flex-1 overflow-hidden",
               className
             )}
+            onClick={() => {
+              setOpen(true);
+            }}
             initial={{
               opacity: 0,
               scale: 0.5,

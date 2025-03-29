@@ -1,7 +1,7 @@
 import logo from "../../images/perfona.png";
 import google from "../../images/icons8-google.svg";
 import "../../App.css";
-import { Checkbox, Form, Input } from "antd";
+import { Checkbox, Form, Input, Spin } from "antd";
 import { AnimatedTestimonialsDemo } from "../../components/ui/AnimatedTestimonialsDemo";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
@@ -13,12 +13,13 @@ export default function Auth() {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-  const sendValueRegister = useMutation(
+  const { mutate: registerMutate, isLoading: registerLoading } = useMutation(
     (obj) => PerfonaAdmin.authRegister(obj),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        console.log(data);
         queryClient.invalidateQueries();
-        navigate("admin/dashboard");
+        navigate("/admin/dashboard");
         console.log("Access olindi");
       },
       onError: () => {
@@ -27,24 +28,31 @@ export default function Auth() {
     }
   );
 
-  const sendValueLogin = useMutation((obj) => PerfonaAdmin.authLogin(obj), {
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-      navigate("admin/dashboard");
-      console.log("Access olindi Loginniki");
-    },
-    onError: () => {
-      console.log("Mutation  Xato");
-    },
-  });
+  const { mutate: loginMutate, isLoading: loginLoading } = useMutation(
+    (obj) => PerfonaAdmin.authLogin(obj),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries();
+        navigate("/admin/dashboard");
+        console.log("Access olindi Loginniki");
+      },
+      onError: () => {
+        console.log("Mutation  Xato");
+      },
+    }
+  );
 
   const handleTakeValue = (data) => {
     console.log(data);
-    sendValueRegister.mutate(data);
+    registerMutate(data);
   };
   const handleTakeValueLogin = (data) => {
-    console.log(data);
-    sendValueLogin.mutate(data);
+    const value = {
+      phone: data.phoneLogin,
+      password: data.passwordLogin,
+    };
+    console.log(value);
+    loginMutate(value);
   };
   return (
     <div>
@@ -84,7 +92,7 @@ export default function Auth() {
                   >
                     <input
                       type="text"
-                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 focus"
+                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 focus focus:outline-none focus:border-none border-none bg-[#eee]  focus:ring-[0px] "
                     />
                   </Form.Item>
                   <Form.Item
@@ -119,10 +127,11 @@ export default function Auth() {
                     </Checkbox>
                   </Form.Item> */}
                   <button
-                    type="submit"
-                    className="pb-2.5 pt-3.5 bg-black text-white rounded-full border w-full"
+                    // to="/admin/dashboard"
+                    type={`${registerLoading ? "button" : "submit"}`}
+                    className="py-2.5  bg-gradient-to-t from-[#0230C7] to-[#0097FF] text-white rounded-[8px] border w-full authSpin mt-4"
                   >
-                    Roʻyhatdan oʻtish
+                    {registerLoading ? <Spin /> : "Roʻyhatdan oʻtish"}
                   </button>
                   <div className="flex items-start mt-4">
                     <p>
@@ -173,7 +182,7 @@ export default function Auth() {
                   className="flex flex-col gap-3"
                 >
                   <Form.Item
-                    name="phone"
+                    name="phoneLogin"
                     label="Telefon raqamingiz"
                     required={true}
                     className="flex flex-col"
@@ -181,11 +190,11 @@ export default function Auth() {
                   >
                     <input
                       type="text"
-                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 focus"
+                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 focus focus:outline-none focus:border-none border-none bg-[#eee]  focus:ring-[0px] "
                     />
                   </Form.Item>
                   <Form.Item
-                    name="password"
+                    name="passwordLogin"
                     label="Parolingiz"
                     layout="vertical"
                     required={true}
@@ -205,10 +214,10 @@ export default function Auth() {
                   </Form.Item> */}
                   <button
                     // to="/admin/dashboard"
-                    type="submit"
-                    className="py-2.5  bg-black text-white rounded-full border w-full"
+                    type={`${loginLoading ? "button" : "submit"}`}
+                    className="py-2.5  bg-gradient-to-t from-[#0230C7] to-[#0097FF] text-white rounded-[8px] border w-full authSpin"
                   >
-                    Accountga kirish
+                    {loginLoading ? <Spin /> : "Accountga kirish"}
                   </button>
                   <div className="flex items-start mt-4">
                     <p>

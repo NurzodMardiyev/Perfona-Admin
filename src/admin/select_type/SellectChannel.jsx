@@ -38,8 +38,8 @@ export default function SellectChannel() {
     }
 
     // Fayl hajmini tekshirish (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      message.error("Rasm hajmi 5MB dan kichik bo'lishi kerak!");
+    if (file.size > 2 * 1024 * 1024) {
+      message.error("Rasm hajmi 2MB dan kichik bo'lishi kerak!");
       return;
     }
 
