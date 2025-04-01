@@ -76,7 +76,7 @@ export default function Header() {
     <div className="dark:bg-gray-800 fixed top-0 bg-gray-100 w-full z-[109] shadow-md ">
       <div className="header-wrapper container lg:max-w-[2560px] md:max-w-[1600px]  mx-auto flex justify-between py-4 md:px-5 px-[20px]  w-full">
         <div className="logpSection flex gap-6 items-center ">
-          <Link to="/admin" className="logo ">
+          <Link to="/" className="logo ">
             <img className="w-full h-[35px] " src={logo} alt="perfona" />
           </Link>
         </div>

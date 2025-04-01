@@ -16,8 +16,8 @@ export default function Auth() {
   const { mutate: registerMutate, isLoading: registerLoading } = useMutation(
     (obj) => PerfonaAdmin.authRegister(obj),
     {
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: (status) => {
+        console.log(status);
         queryClient.invalidateQueries();
         navigate("/admin/dashboard");
         console.log("Access olindi");

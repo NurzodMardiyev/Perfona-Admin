@@ -25,20 +25,14 @@ const items = [
     icon: <RiChatVoiceFill />,
   },
   {
-    key: "/admin/lessons",
-    label: "Barcha Darsliklar",
+    key: "/admin/transition-all",
+    label: "Barcha tranzaksiyalar",
     icon: <FaStubber />,
   },
-
   {
-    key: "/admin/employees",
-    label: "Xodimlar",
-    icon: <IoPersonAddSharp />,
-  },
-  {
-    key: "/superadminpanel/korzinka",
-    label: "Savat",
-    icon: <FaTrashAlt />,
+    key: "/admin/courses-or-channels",
+    label: "Kanallar va kurslar",
+    icon: <FaStubber />,
   },
 ];
 

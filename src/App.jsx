@@ -7,6 +7,7 @@ import SellectCourse from "./admin/select_type/SellectCourse.jsx";
 import Dashboard from "./admin/dashboard/Dashboard.jsx";
 import ActiveUsers from "./admin/users/Users.jsx";
 import TokenRefresher from "./admin/auth/TokenRefresh.js";
+import Transfers from "./admin/transuction/Transfers.jsx";
 
 function App() {
   // console.log(refresh);
@@ -15,12 +16,13 @@ function App() {
     <div>
       <TokenRefresher />
       <Routes>
-        <Route path="/admin" element={<Auth />} />
+        <Route path="/" element={<Auth />} />
         <Route path="admin" element={<MainPageAdmin />}>
           <Route path="select_channel" element={<SellectChannel />} />
           <Route path="select_course" element={<SellectCourse />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<ActiveUsers />} />
+          <Route path="transition-all" element={<Transfers />} />
           {/* <Route path="add" element={<AddCard />} /> */}
         </Route>
       </Routes>
