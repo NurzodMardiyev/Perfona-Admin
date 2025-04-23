@@ -27,48 +27,6 @@ const data = [
     address: "10.000 so'm",
     tags: ["active"],
   },
-  {
-    key: "1",
-    name: "John Brown",
-    age: "+998883921383",
-    address: "10.000 so'm",
-    tags: ["active"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: "+998883921383",
-    address: "10.000 so'm",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: "+998883921383",
-    address: "10.000 so'm",
-    tags: ["active"],
-  },
-  {
-    key: "1",
-    name: "John Brown",
-    age: "+998883921383",
-    address: "10.000 so'm",
-    tags: ["active"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: "+998883921383",
-    address: "10.000 so'm",
-    tags: ["active"],
-  },
-  {
-    key: "1",
-    name: "John Brown",
-    age: "+998883921383",
-    address: "10.000 so'm",
-    tags: ["active"],
-  },
 ];
 
 const columns = [
@@ -130,13 +88,13 @@ export default function ActiveUsers() {
 
   return (
     <div id="users">
-      <div className="mb-3 flex justify-between">
+      <div className="px-[10px] mb-3 mt-[50px] md:mt-auto flex gap-3 justify-between">
         <div>
           <Form className="flex">
-            <Form.Item name="user">
-              <Input className="rounded-l-md rounded-r-none md:h-[39px] border-r-0" />
+            <Form.Item name="user" className="  ">
+              <Input className="rounded-l-md rounded-r-none md:text-[16px] text-[12px] md:h-[39px] h-[30px] border-r-0" />
             </Form.Item>
-            <Button className="rounded-l-none rounded-r-md md:h-[39px] text-white bg-gradient-to-t from-[#0230C7] to-[#0097FF] ">
+            <Button className="rounded-l-none  mt-[1px] md:mt-0  rounded-r-md  text-[12px] md:text-[16px] h-[30px] md:h-[39px]  text-white bg-gradient-to-t from-[#0230C7] to-[#0097FF]  ">
               Izlash...
             </Button>
           </Form>
@@ -147,7 +105,7 @@ export default function ActiveUsers() {
             { value: "passive", label: "Obunani bekor qilganlar " },
           ]}
           defaultValue="Foydalanuvchilar"
-          className="w-[200px] cursor-pointer"
+          className="md:w-[200px] cursor-pointer"
         />
       </div>
       <div className="users ">

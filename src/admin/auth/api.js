@@ -2,14 +2,14 @@ import axios from "axios";
 import SecureStorage from "react-secure-storage";
 
 const api = axios.create({
-  baseURL: "http://95.46.210.69",
+  baseURL: "https://api.perfona.uz/",
 });
 
 // Har bir so‘rovga access token qo‘shish
 api.interceptors.request.use(
   async (config) => {
     const token = SecureStorage.getItem("accessToken");
-    console.log(token);
+    // console.log(token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,13 +31,13 @@ api.interceptors.response.use(
 
       if (!refreshToken) {
         console.log("Refresh token yo‘q, login sahifasiga yo‘naltirilmoqda...");
-        window.location.href = "/admin";
+        window.location.href = "/";
         return Promise.reject(error);
       }
 
       try {
         const response = await axios.post(
-          "http://95.46.210.69/api/account/token/refresh/",
+          "https://api.perfona.uz/api/users/login/",
           { refresh: refreshToken }
         );
 
@@ -54,7 +54,7 @@ api.interceptors.response.use(
         console.error("Refresh token eskirgan yoki noto‘g‘ri:", refreshError);
         SecureStorage.removeItem("accessToken");
         SecureStorage.removeItem("refreshToken");
-        window.location.href = "/admin";
+        window.location.href = "/";
       }
     }
 

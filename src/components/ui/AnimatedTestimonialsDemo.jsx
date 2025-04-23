@@ -1,9 +1,9 @@
 import { AnimatedTestimonials } from "./animated-testimonials";
-import img1 from "../../images/login/1.jpeg";
-import img2 from "../../images/login/2.jpeg";
-import img3 from "../../images/login/3.jpeg";
-import img4 from "../../images/login/4.jpeg";
-import img5 from "../../images/login/5.jpeg";
+import img1 from "../../../public/images/login/1.jpeg";
+import img2 from "../../../public/images/login/2.jpeg";
+import img3 from "../../../public/images/login/3.jpeg";
+import img4 from "../../../public/images/login/4.jpeg";
+import img5 from "../../../public/images/login/5.jpeg";
 
 export function AnimatedTestimonialsDemo() {
   const testimonials = [

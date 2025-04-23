@@ -51,7 +51,7 @@ export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
   ];
 
   return (
-    <div className="flex items-center justify-center ">
+    <div className="flex items-center justify-center">
       {/* <Modal> */}
       <ModalTrigger
         className={`bg-black dark:bg-white dark:text-black text-white flex justify-center group/modal-btn w-full transition-all duration-150 ${
@@ -59,7 +59,7 @@ export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
         }`}
       >
         <span
-          className={`group-hover/modal-btn:translate-x-60 text-center transition duration-500 italic ${
+          className={`group-hover/modal-btn:translate-x-60 text-center md:text-[16px] text-[12px]  transition duration-500 italic ${
             collapsed ? "hidden" : ""
           }`}
         >
@@ -76,7 +76,7 @@ export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
       <ModalBody>
         <ModalContent>
           <h4
-            className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8"
+            className=" md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8 text-[13px] "
             style={{ fontFamily: "IvyEpic, sans-serif" }}
           >
             Siz qoʻshmoqchi boʻlgan
@@ -109,7 +109,7 @@ export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
                   onClick={() => {
                     setOpen(false);
                   }}
-                  className="w-[200px] h-[130px] flex items-center border justify-center rounded-md bg-gradient-to-t  from-[#0230C7] to-[#0097FF] text-white gap-2 hover:text-white"
+                  className="md:w-[200px] md:h-[130px] w-[180px] h-[110px] text-[12px] md:text-[16px] flex items-center border justify-center rounded-md bg-gradient-to-t  from-[#0230C7] to-[#0097FF] text-white gap-2 hover:text-white"
                 >
                   <BiSolidSelectMultiple />
                   {link.name}
@@ -117,40 +117,40 @@ export function AnimatedModalDemo({ collapsed }: AnimatedModalDemoProps) {
               </motion.div>
             ))}
           </div>
-          <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-start max-w-md mx-auto">
+          <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-start max-w-md mx-auto ">
             <div className="flex  items-center justify-center">
               🎯
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+              <span className="text-neutral-700 dark:text-neutral-300 md:text-sm text-[11px]">
                 Shaxsiylashtirilgan Kontent
               </span>
             </div>
             <div className="flex items-center justify-center">
               💰
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+              <span className="text-neutral-700 dark:text-neutral-300 md:text-sm text-[11px]">
                 Qulay Toʻlov Tizimi
               </span>
             </div>
             <div className="flex items-center justify-center">
               🎮
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+              <span className="text-neutral-700 dark:text-neutral-300 md:text-sm text-[11px]">
                 Interaktiv Imkoniyatlar
               </span>
             </div>
             <div className="flex  items-center justify-center">
               📥
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+              <span className="text-neutral-700 dark:text-neutral-300 md:text-sm text-[11px]">
                 Materiallarni Yuklab Olish Imkoniyati
               </span>
             </div>
             <div className="flex items-center justify-center">
               📊
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+              <span className="text-neutral-700 dark:text-neutral-300 md:text-sm text-[11px]">
                 Progressni Kuzatish
               </span>
             </div>
             <div className="flex items-center justify-center">
               🛠️
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+              <span className="text-neutral-700 dark:text-neutral-300 md:text-sm text-[11px]">
                 Qoʻllab-quvvatlash va Konsultatsiya
               </span>
             </div>

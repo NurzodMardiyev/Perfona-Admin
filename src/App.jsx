@@ -8,6 +8,7 @@ import Dashboard from "./admin/dashboard/Dashboard.jsx";
 import ActiveUsers from "./admin/users/Users.jsx";
 import TokenRefresher from "./admin/auth/TokenRefresh.js";
 import Transfers from "./admin/transuction/Transfers.jsx";
+import SellectChannelTwoStep from "./admin/select_type/SelectChannelTwoStep.jsx";
 
 function App() {
   // console.log(refresh);
@@ -23,6 +24,10 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<ActiveUsers />} />
           <Route path="transition-all" element={<Transfers />} />
+          <Route
+            path="select_channel_two-step"
+            element={<SellectChannelTwoStep />}
+          />
           {/* <Route path="add" element={<AddCard />} /> */}
         </Route>
       </Routes>

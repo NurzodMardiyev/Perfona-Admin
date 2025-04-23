@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useContext,
 } from "react";
-import logo from "../../images/perfona.png";
+import logo from "../../../public/images/perfona.webp";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { DarkThemeToggle, Flowbite } from "flowbite-react";
@@ -15,12 +15,19 @@ import { IoMdNotifications } from "react-icons/io";
 // import { useTranslation } from "react-i18next";
 import "../../App.css";
 // import { useEmployeeInfo } from "../../hooks/useEmployeeInfo";
-import { Drawer, Flex, notification, Spin } from "antd";
+import {
+  Drawer,
+  Flex,
+  Layout,
+  notification,
+  Spin,
+  Menu as MenuAntd,
+} from "antd";
 // import { BellIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { RiChatVoiceFill } from "react-icons/ri";
-import { MdPermMedia } from "react-icons/md";
+import { MdDashboard, MdPermMedia } from "react-icons/md";
 import { IoSchoolSharp } from "react-icons/io5";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { BsPersonLinesFill } from "react-icons/bs";
@@ -29,6 +36,8 @@ import { AiFillProject } from "react-icons/ai";
 import { SiLevelsdotfyi } from "react-icons/si";
 import { AnimatedModalDemo } from "../../components/ui/AnimatedModal";
 import { ModalContext } from "../../context/ContextApi";
+import { FaStubber } from "react-icons/fa6";
+const { Sider } = Layout;
 // import { ip } from "../../ips";
 
 export default function Header() {
@@ -37,6 +46,7 @@ export default function Header() {
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openMunu, setOpenMenu] = useState(false);
   const loaction = useLocation();
   const [notifications, setNotifications] = useState([]);
   const [notif, setNotif] = useState(2);
@@ -49,6 +59,7 @@ export default function Header() {
   const showDrawer = () => {
     setOpen(true);
   };
+
   const languages = [
     {
       title: "Uz",
@@ -69,22 +80,64 @@ export default function Header() {
   };
 
   const handleShowMenu = () => {
-    setShow(!show);
+    setOpenMenu(true);
+    setShow(false);
   };
+
+  const handleHideMenu = () => {
+    setOpenMenu(false);
+    setShow(true);
+  };
+
+  const onCloseMenu = () => {
+    setOpenMenu(false);
+    setShow(true);
+  };
+
+  const items = [
+    {
+      key: "/admin/dashboard",
+      label: "Bosh Sahifa",
+      icon: <MdDashboard />,
+    },
+    {
+      key: "/admin/users",
+      label: "Foydalanuvchilar",
+      icon: <RiChatVoiceFill />,
+    },
+    {
+      key: "/admin/transition-all",
+      label: "Barcha tranzaksiyalar",
+      icon: <FaStubber />,
+    },
+    {
+      key: "/admin/courses-or-channels",
+      label: "Kanallar va kurslar",
+      icon: <FaStubber />,
+    },
+  ];
+
+  function handleClick(e) {
+    navigate(e.key);
+  }
 
   return (
     <div className="dark:bg-gray-800 fixed top-0 bg-gray-100 w-full z-[109] shadow-md ">
-      <div className="header-wrapper container lg:max-w-[2560px] md:max-w-[1600px]  mx-auto flex justify-between py-4 md:px-5 px-[20px]  w-full">
+      <div className="header-wrapper container lg:max-w-[2560px] md:max-w-[1600px]  mx-auto flex justify-between py-4 md:px-5 px-[10px]  w-full">
         <div className="logpSection flex gap-6 items-center ">
           <Link to="/" className="logo ">
-            <img className="w-full h-[35px] " src={logo} alt="perfona" />
+            <img
+              className="w-full md:h-[35px] h-[25px]"
+              src={logo}
+              alt="perfona"
+            />
           </Link>
         </div>
         <div className="loginSection flex items-center">
           <div className="block md:hidden">
             <AnimatedModalDemo collapsed={collapsed} />
           </div>
-          <div className="flex items-center relative">
+          <div className="flex items-center ml-[10px] relative">
             <button
               type="button"
               onClick={showDrawer}
@@ -158,6 +211,29 @@ export default function Header() {
             </MenuItems>
           </Menu>
 
+          <div>
+            <Drawer
+              title="Menu"
+              onClose={onCloseMenu}
+              open={openMunu}
+              // drawerClassName="z-menu"
+              zIndex={100}
+              placement="left"
+              width={"50%"}
+              id="z-menu"
+            >
+              <Sider trigger={null} collapsible collapsed={collapsed}>
+                <MenuAntd
+                  onClick={handleClick}
+                  mode="inline"
+                  className=""
+                  items={items}
+                  selectedKeys={location.pathname}
+                />
+              </Sider>
+            </Drawer>
+          </div>
+
           <div
             className="responsiveMenu relative md:hidden  ps-3 py-1"
             ref={menuRef}
@@ -170,7 +246,7 @@ export default function Header() {
                 />
               ) : (
                 <IoCloseSharp
-                  onClick={handleShowMenu}
+                  onClick={handleHideMenu}
                   className="dark:text-white text-[22px]"
                 />
               )}

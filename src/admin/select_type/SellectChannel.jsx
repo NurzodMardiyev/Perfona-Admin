@@ -1,266 +1,465 @@
-import { Col, Input, Form, Flex, Button, Space } from "antd";
+import { Col, Input, Form, Flex, Button, Space, Steps } from "antd";
 import "../../App.css";
-import { message, Upload } from "antd";
+import { message, Upload, Select } from "antd";
 import { TiUpload } from "react-icons/ti";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
 const { Dragger } = Upload;
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { PerfonaAdmin } from "../../feature/queries";
+import SecureStorage from "react-secure-storage";
+import { useNavigate } from "react-router-dom";
 
 export default function SellectChannel() {
   const [form] = Form.useForm();
   const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [valueDesc, setValueDesc] = useState("");
+  const [stepStatus, setStepStatus] = useState(0);
+  const [currentStatus, setCurrentStatus] = useState();
+  const navigation = useNavigate();
 
-  console.log(imagePreview);
-
-  // Rasmni base64 ga o'tkazish
-  const convertToBase64 = (file) => {
+  const convertToWebPBlob = (file) => {
     return new Promise((resolve, reject) => {
+      const img = new Image();
       const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
+
+      reader.onload = () => {
+        img.src = reader.result;
+      };
+
+      img.onload = () => {
+        const aspectRatio = img.width / img.height;
+        const targetAspectRatio = 16 / 9;
+        if (Math.abs(aspectRatio - targetAspectRatio) >= 0.01) {
+          reject(new Error("Rasm o‘lchamlari 16:9 bo‘lishi kerak!"));
+          return;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const webpFile = new File([blob], "image.webp", {
+                type: "image/webp",
+              });
+              resolve(webpFile);
+            } else {
+              reject(new Error("WebP blob yaratib bo‘lmadi"));
+            }
+          },
+          "image/webp",
+          0.8
+        );
+      };
+
+      img.onerror = (error) => reject(error);
       reader.onerror = (error) => reject(error);
+
+      reader.readAsDataURL(file);
     });
   };
+
+  // Rasmni base64 ga o'tkazish
+  // const convertToBase64 = (file) => {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = () => resolve(reader.result);
+  //     reader.onerror = (error) => reject(error);
+  //   });
+  // };
 
   // Upload handler
   const handleUpload = async (info) => {
     const { file } = info;
 
-    // Rasm formatini tekshirish
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
-      message.error(
-        "Faqat JPG, PNG yoki WebP formatidagi rasmlar yuklanishi mumkin!"
-      );
+      message.error("Faqat JPG, PNG yoki WebP formatdagi rasm yuklash mumkin!");
       return;
     }
 
-    // Fayl hajmini tekshirish (max 5MB)
     if (file.size > 2 * 1024 * 1024) {
-      message.error("Rasm hajmi 2MB dan kichik bo'lishi kerak!");
+      message.error("Rasm hajmi 2MB dan kichik bo‘lishi kerak!");
       return;
     }
 
     try {
       setIsUploading(true);
+      const webpFile = await convertToWebPBlob(file);
 
-      // Base64 ga konvertatsiya qilish
-      const base64Image = await convertToBase64(file);
+      // Preview uchun
+      const previewReader = new FileReader();
+      previewReader.onloadend = () => {
+        setImagePreview(previewReader.result);
+      };
+      previewReader.readAsDataURL(webpFile);
 
-      // Formga saqlash
-      form.setFieldsValue({ photo: base64Image });
-      setImagePreview(base64Image);
-
+      form.setFieldsValue({ photo: webpFile });
       message.success("Rasm muvaffaqiyatli yuklandi");
-    } catch (error) {
-      console.error("Rasmni o'qishda xatolik:", error);
-      message.error("Rasmni yuklashda xatolik yuz berdi");
+    } catch (err) {
+      console.error("Rasmni siqishda xatolik:", err);
+      message.error(
+        "Rasmni yuklashda xatolik yuz berdi, O'lchamlarga etibor bering!"
+      );
     } finally {
       setIsUploading(false);
     }
   };
 
+  const queryClient = useQueryClient();
+  const {
+    mutate: addChannal,
+    isLoading,
+    isError,
+    error,
+    isSuccess,
+  } = useMutation((value) => PerfonaAdmin.createChannal(value), {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries();
+      message.success("Kanal muvaffaqiyatli qo'shildi");
+      setStepStatus(1);
+      navigation("admin/select_channel_two-step");
+      console.log(data);
+    },
+    onError: () => {
+      setCurrentStatus("error");
+      message.error("Xatolik yuz berdi. Qaytadan urinib ko'ring!");
+      console.log("Kanal yaratishning mutationida xatolik!");
+    },
+  });
+
   // Formni yuborish
   const onFinish = async (values) => {
-    const token = localStorage.getItem("accessToken");
     try {
       console.log("Yuborilayotgan ma'lumotlar:", values);
 
       // Backendga yuborish (misol uchun)
 
-      const response = await axios.post(
-        "https://perfonabackend.pythonanywhere.com/main/channels/",
-        {
-          ...values,
-          photo: imagePreview, // base64 formatdagi rasm
-          category: 1,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const formData = new FormData();
 
-      message.success("Kanal muvaffaqiyatli qo'shildi");
-      console.log(response.data);
+      formData.append("photo", values.photo.file);
+      values.category.forEach((id) => {
+        formData.append("category_ids", id);
+      });
+      // formData.append("category_ids ", values.category);
+      formData.append("channel_link ", values.link);
+      formData.append("name", values.name);
+      formData.append("description ", values.about);
+      formData.append("about_video ", values.video_link);
+      formData.append("is_active", "true");
+
+      for (let pair of formData.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
+
+      addChannal(formData);
+      // const response = await axios.post(
+      //   "https://api.perfona.uz/api/contents/channels/",
+      //   formData,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //     onUploadProgress: (progressEvent) => {
+      //       const percentCompleted = Math.round(
+      //         (progressEvent.loaded * 100) / progressEvent.total
+      //       );
+      //       setPercent(percentCompleted);
+      //     },
+      //   }
+      // );
+
+      // message.success("Kanal muvaffaqiyatli qo'shildi");
+      // console.log(response.data);
     } catch (error) {
       console.error("Xatolik:", error);
       message.error("Xatolik yuz berdi");
     }
   };
 
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
+
+  const { data } = useQuery(
+    ["catrgories"],
+    () => PerfonaAdmin.categoriesList(),
+    {
+      staleTime: Infinity, // Ma'lumot hech qachon eski hisoblanmaydi
+      cacheTime: Infinity,
+    }
+  );
+
+  const newDataOption = data?.data.map((item) => {
+    return {
+      label: item.name,
+      value: item.id,
+    };
+  });
+
   return (
-    <div>
+    <div id="addChannel">
       <div className="container max-w-9xl mx-auto md:px-4 px-2 ">
-        <h1 className="text-[28px] font-medium  mb-3">Yopiq kanal qoʻshish</h1>
-        <div className="">
-          <Form name="select_channel" onFinish={onFinish}>
-            <div className="grid grid-cols-2 md:gap-x-10 gap-y-3">
-              <Form.Item
-                label="Kanal nomi"
-                name="name"
-                className="col-span-1"
-                layout="vertical"
-              >
-                <Input type="text" className="w-full selectForm" />
-              </Form.Item>
-
-              <Form.Item
-                label="Kanal linki"
-                name="link"
-                className="col-span-1"
-                layout="vertical"
-                rules={[
-                  { type: "url", warningOnly: true },
-                  {
-                    type: "string",
-                    min: 6,
-                  },
-                ]}
-              >
-                <Input type="text" className="w-full selectForm" />
-              </Form.Item>
-
-              <Form.Item
-                label="Rasm yuklash"
-                name="photo"
-                rules={[{ required: true, message: "Iltimos, rasm yuklang!" }]}
-                className="col-span-1"
-              >
-                <Dragger
-                  name="photo"
-                  multiple={false}
-                  showUploadList={false}
-                  beforeUpload={() => false} // Avtomatik yuklashni o'chirish
-                  onChange={handleUpload}
-                  accept="image/jpeg,image/png,image/webp"
-                >
-                  <p className="p-0 flex justify-center text-[20px]">
-                    <TiUpload />
-                  </p>
-                  <p className="ant-upload-text">
-                    Rasmni shu yerga tashlang yoki tanlang
-                  </p>
-                  <p className="ant-upload-hint">
-                    JPG, PNG yoki WebP formatida, maksimum 5MB
-                  </p>
-                </Dragger>
-              </Form.Item>
-
-              {imagePreview && (
-                <div className="col-span-1">
-                  <div className="mb-2 font-medium">Rasm korinishi:</div>
-                  <img
-                    src={imagePreview}
-                    alt="Yuklangan rasm"
-                    className="max-w-full h-auto max-h-40 border rounded"
-                  />
-                </div>
-              )}
-
-              <Form.Item
-                label="Kanal haqida"
-                className="col-span-1"
-                name="about"
-                layout="vertical"
-              >
-                <Input type="text" className="w-full selectForm" />
-              </Form.Item>
-
-              <Form.Item
-                label="Kanal haqida video link"
-                name="video_link"
-                className="col-span-1"
-                layout="vertical"
-                rules={[
-                  { type: "url", warningOnly: true },
-                  {
-                    type: "string",
-                    min: 6,
-                  },
-                ]}
-              >
-                <Input type="text" className="w-full selectForm" />
-              </Form.Item>
-
-              <Form.Item
-                name="tariffs"
-                label="Tarif qo'shsih"
-                className="col-span-1"
-                layout="vertical"
-                style={{
-                  marginBottom: 10,
-                }}
-              >
-                <Form.List name="tariffs" className="col-span-1">
-                  {(fields, { add, remove }) => (
-                    <>
-                      {fields.map(({ key, name, ...restField }) => (
-                        <Space
-                          key={key}
-                          style={{
-                            marginBottom: 0,
-                          }}
-                          align="baseline"
-                          className="w-full grid grid-cols-2 relative items-center"
-                        >
-                          <Form.Item
-                            {...restField}
-                            name={[name, "name"]}
-                            className="col-span-1 mb-1"
-                          >
-                            <Input
-                              placeholder="Tarif nomini kiriting!"
-                              className="selectForm"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            {...restField}
-                            name={[name, "price"]}
-                            className="col-span-1 mb-1"
-                          >
-                            <Input
-                              placeholder="Ta'rif narxini kiriting!"
-                              className="selectForm"
-                            />
-                          </Form.Item>
-                          <MinusCircleOutlined
-                            onClick={() => remove(name)}
-                            className="absolute z-10 top-4 right-1"
-                          />
-                        </Space>
-                      ))}
-                      <Form.Item>
-                        <Button
-                          type=""
-                          onClick={() => add()}
-                          icon={<PlusOutlined />}
-                          className="py-2 h-[41px]"
-                          style={{ heigth: "41px", width: "100%" }}
-                        >
-                          Qoʻshish
-                        </Button>
-                      </Form.Item>
-                    </>
-                  )}
-                </Form.List>
-              </Form.Item>
-            </div>
-
-            <Flex gap={30} className="w-full mt-8">
-              <button
-                style={{ borderRadius: "8px" }}
-                className="py-2.5 mb-4 w-full bg-gradient-to-t from-[#0230C7] to-[#0097FF] border raunded-md text-white hover:shadow-md "
-              >
-                Yuborish
-              </button>
-            </Flex>
-          </Form>
+        <div className="flex justify-between w-full items-center">
+          <div className="mb-4">
+            <h1 className="md:text-[28px] font-medium leading-[36px] ">
+              Yopiq kanal qoʻshish
+            </h1>
+            <p className="">Yaxshi kontent obuna talab qiladi</p>
+          </div>
+          <div>
+            <Steps
+              labelPlacement="vertical"
+              current={stepStatus}
+              status={currentStatus}
+              // size="small"
+              items={[
+                {
+                  title: "Finished",
+                },
+                {
+                  title: "In Progress",
+                },
+                {
+                  title: "Waiting",
+                },
+              ]}
+            />
+          </div>
         </div>
+
+        {isLoading && (
+          <div className="absolute  inset-0 bg-white bg-opacity-60 z-10 flex items-center justify-center">
+            <div className="loader" />
+          </div>
+        )}
+        <Form name="select_channel" className="relative" onFinish={onFinish}>
+          <div className="overlay relative">
+            <div className="grid grid-cols-12 gap-4 ">
+              <div className="chanal_img col-span-4 border border-[#E3E3E3] bg-[#FAFAFA] rounded-md p-4">
+                <h2 className="text-[22px] font-medium border-b border-[#E3E3E3]">
+                  Kanal rasmi
+                </h2>
+                <div className="mt-3">
+                  <Form.Item label="Kategoriya" name="category">
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      style={{ width: "100%" }}
+                      placeholder="Please select"
+                      onChange={handleChange}
+                      options={newDataOption}
+                    />
+                  </Form.Item>
+                </div>
+                <div className="mt-5">
+                  <p className="text-[14px] font-[400] mb-1.5">Rasm yuklash</p>
+                  <div onClick={handleUpload}>
+                    {imagePreview ? (
+                      <div className="w-full">
+                        <img
+                          src={imagePreview}
+                          alt="Yuklangan rasm"
+                          className="w-full h-auto max-h-48 border rounded "
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="max-w-full h-auto h-40 border rounded bg-[#f4f4f4] flex justify-center items-center text-center">
+                        <p>
+                          Kiritiladigan rasm: <br />{" "}
+                          <span className="font-semibold text-[18px]">
+                            16:9
+                          </span>{" "}
+                          <br />
+                          formatda boʻlsin!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <Form.Item name="photo" className="mt-3">
+                    <Dragger
+                      name="photo"
+                      multiple={false}
+                      showUploadList={false}
+                      beforeUpload={() => false} // Avtomatik yuklashni o'chirish
+                      onChange={handleUpload}
+                      accept="image/jpeg,image/png,image/webp"
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        border: "1px solid #E3E3E3",
+                        backgroundColor: "white",
+                        padding: "5px 15px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <p className="p-0 flex justify-center text-[20px]">
+                          <TiUpload />
+                        </p>
+                        <p className="ant-upload-text">
+                          Rasmni tashlang yoki tanlang
+                        </p>
+                      </div>
+                    </Dragger>
+                  </Form.Item>
+                </div>
+              </div>
+              <div className=" col-span-8 border border-[#E3E3E3] bg-[#FAFAFA] rounded-md p-4">
+                <h2 className="text-[22px] font-medium border-b border-[#E3E3E3]">
+                  Kanal maʻlumotlari
+                </h2>
+                <div className="mt-4">
+                  <Form.Item label="Kanal nomi" name="name" layout="vertical">
+                    <Input
+                      type="text"
+                      className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                    />
+                  </Form.Item>
+                </div>
+
+                <div className="mt-4 flex gap-3">
+                  <Form.Item
+                    label="Kanal linki"
+                    name="link"
+                    className="flex-1 "
+                    layout="vertical"
+                    rules={[
+                      { type: "url", warningOnly: true },
+                      {
+                        type: "string",
+                        min: 6,
+                      },
+                    ]}
+                  >
+                    <Input
+                      type="text"
+                      className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Kanal haqida video link"
+                    name="video_link"
+                    className="flex-1"
+                    layout="vertical"
+                    rules={[
+                      { type: "url", warningOnly: true },
+                      {
+                        type: "string",
+                        min: 6,
+                      },
+                    ]}
+                  >
+                    <Input
+                      type="text"
+                      className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                    />
+                  </Form.Item>
+                </div>
+                <div className="mt-4">
+                  <Form.Item
+                    label="Kanal haqida"
+                    className="col-span-1"
+                    name="about"
+                    layout="vertical"
+                  >
+                    <ReactQuill
+                      theme="snow"
+                      value={valueDesc}
+                      onChange={setValueDesc}
+                      className="w-full  border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                    />
+                  </Form.Item>
+                </div>
+                {/* <div className="mt-4">
+                <Form.Item
+                  name="tariffs"
+                  label="Tarif qo'shsih"
+                  className="col-span-1"
+                  layout="vertical"
+                  style={{
+                    marginBottom: 10,
+                  }}
+                >
+                  <Form.List name="tariffs" className="col-span-1">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map(({ key, name, ...restField }) => (
+                          <Space
+                            key={key}
+                            style={{
+                              marginBottom: 0,
+                            }}
+                            align="baseline"
+                            className="w-full grid grid-cols-2 relative items-center"
+                          >
+                            <Form.Item
+                              {...restField}
+                              name={[name, "name"]}
+                              className="col-span-1 mb-1"
+                            >
+                              <Input
+                                placeholder="Tarif nomini kiriting!"
+                                className="h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              {...restField}
+                              name={[name, "price"]}
+                              className="col-span-1 mb-1"
+                            >
+                              <Input
+                                placeholder="Ta'rif narxini kiriting!"
+                                className="h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                              />
+                            </Form.Item>
+                            <MinusCircleOutlined
+                              onClick={() => remove(name)}
+                              className="absolute z-10 top-4 right-1"
+                            />
+                          </Space>
+                        ))}
+                        <Form.Item>
+                          <Button
+                            type=""
+                            onClick={() => add()}
+                            icon={<PlusOutlined />}
+                            className="py-2 h-[39px]"
+                            style={{ heigth: "39px", width: "100%" }}
+                          >
+                            Qoʻshish
+                          </Button>
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
+                </Form.Item>
+              </div> */}
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex justify-end mt-8">
+            <button
+              style={{ borderRadius: "6px" }}
+              className="py-2.5 mb-4 w-[200px] bg-gradient-to-t from-[#0230C7] to-[#0097FF] border raunded-md text-white hover:shadow-md "
+            >
+              Keyingi
+            </button>
+          </div>
+        </Form>
       </div>
     </div>
   );

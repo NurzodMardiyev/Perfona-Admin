@@ -1,16 +1,19 @@
-import logo from "../../images/perfona.png";
-import google from "../../images/icons8-google.svg";
+import logo from "../../../public/images/perfona.webp";
 import "../../App.css";
-import { Checkbox, Form, Input, Spin } from "antd";
+import { Form, Input, message, Spin } from "antd";
 import { AnimatedTestimonialsDemo } from "../../components/ui/AnimatedTestimonialsDemo";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { PerfonaAdmin } from "../../feature/queries";
 import { useNavigate } from "react-router-dom";
+import MaskedInput from "react-text-mask";
+
 export default function Auth() {
   const [login, setLogin] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [checkPassword, setCheckPassword] = useState("");
+  const [check, setCheck] = useState(null);
 
   const queryClient = useQueryClient();
   const { mutate: registerMutate, isLoading: registerLoading } = useMutation(
@@ -19,10 +22,12 @@ export default function Auth() {
       onSuccess: (status) => {
         console.log(status);
         queryClient.invalidateQueries();
-        navigate("/admin/dashboard");
-        console.log("Access olindi");
+        message.success("Registratsiyadan muvaffaqiyatli o'tdingiz!");
+        setLogin(false);
+        console.log("Registratsiyadan o'tildi");
       },
-      onError: () => {
+      onError: (status) => {
+        message.error(status);
         console.log("Mutation  Xato");
       },
     }
@@ -43,16 +48,60 @@ export default function Auth() {
   );
 
   const handleTakeValue = (data) => {
-    console.log(data);
-    registerMutate(data);
-  };
-  const handleTakeValueLogin = (data) => {
+    const maskPhone = "+" + data.phone.replace(/\D/g, "");
+    console.log(maskPhone);
+
     const value = {
-      phone: data.phoneLogin,
-      password: data.passwordLogin,
+      ...data,
+      phone: maskPhone,
     };
     console.log(value);
+    registerMutate(value);
+  };
+  const handleTakeValueLogin = (data) => {
+    const maskPhone = "+" + data.phoneLogin.replace(/\D/g, "");
+    console.log(maskPhone);
+    const value = {
+      phone: maskPhone,
+      password: data.passwordLogin,
+    };
     loginMutate(value);
+  };
+
+  const phoneMask = [
+    "+",
+    "9",
+    "9",
+    "8",
+    " ",
+    "(",
+    /[1-9]/,
+    /\d/,
+    ")",
+    " ",
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+  ];
+
+  const changePassword = (e) => {
+    setCheckPassword(e.target.value);
+  };
+
+  const changeCheckPassword = (e) => {
+    setTimeout(() => {
+      if (checkPassword === e.target.value) {
+        setCheck(true);
+      } else {
+        setCheck(false);
+      }
+    }, 2000);
   };
   return (
     <div>
@@ -90,9 +139,10 @@ export default function Auth() {
                     className="flex flex-col"
                     style={{ display: "block", marginBottom: "10px" }}
                   >
-                    <input
-                      type="text"
-                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 focus focus:outline-none focus:border-none border-none bg-[#eee]  focus:ring-[0px] "
+                    <MaskedInput
+                      mask={phoneMask}
+                      placeholder="+998 (__) ___-__-__"
+                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 py-2.5 focus focus:outline-none focus:border-none border-none bg-[#eee]  focus:ring-[0px]"
                     />
                   </Form.Item>
                   <Form.Item
@@ -103,31 +153,37 @@ export default function Auth() {
                     className="flex flex-col"
                     style={{ display: "block", marginBottom: "10px" }}
                   >
-                    <Input.Password />
+                    <Input.Password
+                      onChange={changePassword}
+                      style={{
+                        border: `1px solid #eeeeee`,
+                        borderColor: `${
+                          check === null ? "#eee" : check ? "#3CEC85" : "red"
+                        }`,
+                      }}
+                    />
                   </Form.Item>
                   <Form.Item
-                    name="repassword"
+                    // name="repassword"
                     label="Parolingizni takrorlang"
                     layout="vertical"
                     required={true}
                     className="flex flex-col"
                     style={{ display: "block", marginBottom: "10px" }}
                   >
-                    <Input.Password />
+                    <Input.Password
+                      onChange={changeCheckPassword}
+                      style={{
+                        border: `1px solid #eeeeee`,
+                        borderColor: `${
+                          check === null ? "#eee" : check ? "#3CEC85" : "red"
+                        }`,
+                      }}
+                    />
                   </Form.Item>
-                  {/* <Form.Item
-                    name="provicy"
-                    // required={true}
-                    valuePropName="checked"
-                    label={null}
-                    className="w-full flex items-start"
-                  >
-                    <Checkbox className="text-[13px] md:text-[14px]">
-                      Qoidalarni qabul qilish
-                    </Checkbox>
-                  </Form.Item> */}
                   <button
                     // to="/admin/dashboard"
+                    disabled={check ? false : true}
                     type={`${registerLoading ? "button" : "submit"}`}
                     className="py-2.5  bg-gradient-to-t from-[#0230C7] to-[#0097FF] text-white rounded-[8px] border w-full authSpin mt-4"
                   >
@@ -135,7 +191,7 @@ export default function Auth() {
                   </button>
                   <div className="flex items-start mt-4">
                     <p>
-                      Agar sizda account mavjudmi?{" "}
+                      Sizda account mavjudmi?{" "}
                       <button
                         onClick={() => setLogin(false)}
                         className="text-blue-500"
@@ -188,9 +244,10 @@ export default function Auth() {
                     className="flex flex-col"
                     layout="vertical"
                   >
-                    <input
-                      type="text"
-                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 focus focus:outline-none focus:border-none border-none bg-[#eee]  focus:ring-[0px] "
+                    <MaskedInput
+                      mask={phoneMask}
+                      placeholder="+998 (__) ___-__-__"
+                      className="w-full outline-[0.5px] focus:border-inherit hover:border-1 py-2.5 focus focus:outline-none focus:border-none border-none bg-[#eee]  focus:ring-[0px]"
                     />
                   </Form.Item>
                   <Form.Item
@@ -221,7 +278,7 @@ export default function Auth() {
                   </button>
                   <div className="flex items-start mt-4">
                     <p>
-                      Agar sizda account mavjudmi?{" "}
+                      Agar sizda boʻlmasa?{" "}
                       <button
                         onClick={() => setLogin(true)}
                         className="text-blue-500"

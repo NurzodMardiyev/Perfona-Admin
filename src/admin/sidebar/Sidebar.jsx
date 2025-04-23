@@ -49,7 +49,6 @@ const Sidebar = () => {
     <div className="z-[99]">
       <div className="fixed ">
         <Sider trigger={null} collapsible collapsed={collapsed}>
-          <div className="demo-logo-vertical " />
           <Menu
             onClick={handleClick}
             mode="inline"

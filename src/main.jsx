@@ -11,11 +11,11 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
   <QueryClientProvider client={queryClient}>
-    <ModalProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ModalProvider>
         <App />
-      </BrowserRouter>
-    </ModalProvider>
+      </ModalProvider>
+    </BrowserRouter>
   </QueryClientProvider>
   // </React.StrictMode>,
 );

@@ -79,19 +79,18 @@ export default function Dashboard() {
             </div>
 
             {/* Metriks */}
-            {/* <div className="grid grid-cols-12 gap-3 mb-10">
+            <div className="grid grid-cols-12 gap-3 mb-10">
               <Metriks />
               <Metriks />
               <Metriks />
               <Metriks />
-            </div> */}
+            </div>
 
             {/* chesni odziflar */}
-            {/* <div className=" mb-10">
+            <div className=" mb-10">
               <TestemonialsStat />
-            </div> */}
+            </div>
           </div>
-          {/* <div className="md:col-span-4 col-span-12 border h-20 ">oal</div> */}
         </div>
       </div>
     </div>
