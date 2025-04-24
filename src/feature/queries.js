@@ -83,4 +83,45 @@ export const PerfonaAdmin = {
 
     return response.data;
   },
+
+  getChannelData: async (id) => {
+    const response = await api.get(`api/contents/channels/${id}/`);
+
+    return response.data;
+  },
+
+  getTariffData: async (id) => {
+    const response = await api.get(`api/payments/tariffs/${id}/`);
+
+    return response.data;
+  },
+
+  checkChannel: async (id, value) => {
+    const token = SecureStorage.getItem("accessToken");
+    const response = await axios.patch(
+      `${apiBase}api/contents/channels/${id}/`,
+      value,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  },
+  checkTariff: async (id, value) => {
+    const token = SecureStorage.getItem("accessToken");
+    const response = await axios.patch(
+      `${apiBase}api/payments/tariffs/${id}/`,
+      value,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  },
 };

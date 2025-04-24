@@ -38,6 +38,8 @@ interface ModalContextType {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   channels: Channel[];
+  currentChannelId: number | undefined;
+  setCurrentChannelId: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 // Kontekstni yaratish
@@ -51,8 +53,9 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [channels, setChannels] = useState([]);
   // const [courses, setCourses] = useState([]);
+  const [currentChannelId, setCurrentChannelId] = useState<number>();
   const location = useLocation();
-  console.log(channels);
+  // console.log(channels);
 
   // console.log(collapsed);
 
@@ -62,7 +65,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const isHaveContent = useMutation(() => PerfonaAdmin.isHaveContent(), {
     onSuccess: (data) => {
       queryClient.invalidateQueries();
-      console.log(data);
+      // console.log(data);
 
       if (data.status !== "OK") {
         message.error("Content borligiga tekshirish operatsiyasida xatolik!");
@@ -94,7 +97,15 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ModalContext.Provider
-      value={{ open, setOpen, collapsed, setCollapsed, channels }}
+      value={{
+        open,
+        setOpen,
+        collapsed,
+        setCollapsed,
+        channels,
+        currentChannelId,
+        setCurrentChannelId,
+      }}
     >
       {children}
     </ModalContext.Provider>

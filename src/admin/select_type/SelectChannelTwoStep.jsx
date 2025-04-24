@@ -3,7 +3,7 @@ import "../../App.css";
 import { message, Upload, Select } from "antd";
 import { TiUpload } from "react-icons/ti";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 const { Dragger } = Upload;
 import ReactQuill from "react-quill";
@@ -12,22 +12,37 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { PerfonaAdmin } from "../../feature/queries";
 import SecureStorage from "react-secure-storage";
 import { ModalContext } from "../../context/ContextApi";
+import { useNavigate } from "react-router-dom";
 
 export default function SellectChannelTwoStep() {
-  const { channels } = useContext(ModalContext);
+  const [channel, setChannel] = useState();
+  const [stepStatus, setStepStatus] = useState(1);
+  const [currentStatus, setCurrentStatus] = useState();
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-  const addTariff = useMutation((value) => PerfonaAdmin.addTariff(value), {
-    onSuccess: (data) => {
-      queryClient.invalidateQueries();
-      console.log(data);
-    },
-  });
+  const { mutate: addTariff, isLoading: mutateLoading } = useMutation(
+    (value) => PerfonaAdmin.addTariff(value),
+    {
+      onSuccess: (data) => {
+        message.success("Kanal qo'shish birinchi qadam muvaffaqiyatli!");
+        queryClient.invalidateQueries();
+        setStepStatus(2);
+        navigate("/admin/select_channel_three-step");
+        console.log(data);
+      },
+      onError: (error) => {
+        setCurrentStatus("error");
+        message.error("Xatolik yuz berdi. Qaytadan urinib ko'ring!");
+        console.log("Kanal qo'shish 2 qadam mutationda xatolik!", error);
+      },
+    }
+  );
   // Formni yuborish
   const onFinish = async (values) => {
     const obj = { ...values, type: "subscription" };
     console.log(obj);
-    addTariff.mutate(obj);
+    addTariff(obj);
   };
 
   const onChange = (value) => {
@@ -36,13 +51,30 @@ export default function SellectChannelTwoStep() {
   const onSearch = (value) => {
     console.log("search:", value);
   };
+  const channelId = SecureStorage.getItem("channelId");
 
-  const option = channels?.map((item) => {
-    return {
-      label: item.name,
-      value: item.id,
-    };
-  });
+  const { data, isLoading } = useQuery(
+    ["channelData", channelId],
+    () => PerfonaAdmin.getChannelData(channelId),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      enabled: !!channelId, // channelId mavjud bo‘lsa, query ishga tushadi
+    }
+  );
+
+  useEffect(() => {
+    if (data) {
+      console.log("Channel data:", data);
+      setChannel(data);
+    }
+  }, [data]);
+  const option = [
+    {
+      label: channel?.data?.name,
+      value: channel?.data?.id,
+    },
+  ];
 
   return (
     <div id="addChannel">
@@ -57,8 +89,8 @@ export default function SellectChannelTwoStep() {
           <div>
             <Steps
               labelPlacement="vertical"
-              current={1}
-              // status={currentStatus}
+              current={stepStatus}
+              status={currentStatus}
               // size="small"
               items={[
                 {
@@ -74,6 +106,12 @@ export default function SellectChannelTwoStep() {
             />
           </div>
         </div>
+        {isLoading ||
+          (mutateLoading && (
+            <div className="absolute  inset-0 bg-white bg-opacity-60 z-10 flex items-center justify-center">
+              <div className="loader" />
+            </div>
+          ))}
         <Form name="select_channel" className="relative" onFinish={onFinish}>
           <div className="overlay relative">
             <div className="grid grid-cols-12 gap-4 ">

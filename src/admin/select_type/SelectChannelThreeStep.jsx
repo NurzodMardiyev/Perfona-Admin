@@ -3,7 +3,7 @@ import "../../App.css";
 import { message, Upload, Select } from "antd";
 import { TiUpload } from "react-icons/ti";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 const { Dragger } = Upload;
 import ReactQuill from "react-quill";
@@ -12,16 +12,82 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { PerfonaAdmin } from "../../feature/queries";
 import SecureStorage from "react-secure-storage";
 import { useNavigate } from "react-router-dom";
-import { ModalContext } from "../../context/ContextApi";
+import { ModalContent } from "../../components/ui/animated-modal";
 
-export default function SellectChannel() {
+export default function SelectChannelThreeStep() {
   const [form] = Form.useForm();
   const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [valueDesc, setValueDesc] = useState("");
-  const [stepStatus, setStepStatus] = useState(0);
+  const [stepStatus, setStepStatus] = useState(2);
   const [currentStatus, setCurrentStatus] = useState();
+  const [channel, setChannel] = useState();
+  const [tariff, setTariff] = useState();
   const navigation = useNavigate();
+
+  // malumotlarni get qilib olib kevolish
+
+  const channelId = SecureStorage.getItem("channelId");
+  const { data, isLoading } = useQuery(
+    ["channelData", channelId],
+    () => PerfonaAdmin.getChannelData(channelId),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      enabled: !!channelId, // channelId mavjud bo‘lsa, query ishga tushadi
+    }
+  );
+
+  const { data: tariffData, isLoading: tariffLoading } = useQuery(
+    ["tariffData", channelId],
+    () => PerfonaAdmin.getTariffData(channelId),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      enabled: !!channelId, // channelId mavjud bo‘lsa, query ishga tushadi
+    }
+  );
+
+  useEffect(() => {
+    if (data || tariffData) {
+      console.log("Channel data:", data);
+      console.log("tariffData data:", tariffData);
+      setTariff(tariffData);
+      setChannel(data);
+      setImagePreview(data?.data.photo);
+    }
+  }, [data, tariffData]);
+
+  const fields = [
+    {
+      name: ["name"],
+      value: channel?.data?.name,
+    },
+    {
+      name: ["link"],
+      value: channel?.data?.channel_link,
+    },
+    {
+      name: ["video_link"],
+      value: channel?.data?.about_video,
+    },
+    {
+      name: ["about"],
+      value: channel?.data?.description,
+    },
+    {
+      name: ["category"],
+      value: channel?.data?.categories.map((cat) => cat.id),
+    },
+    {
+      name: ["photo"],
+      value: channel?.data?.photo,
+    },
+    {
+      name: ["tariff_name"],
+      value: tariff?.data?.photo,
+    },
+  ];
 
   const convertToWebPBlob = (file) => {
     return new Promise((resolve, reject) => {
@@ -69,6 +135,12 @@ export default function SellectChannel() {
     });
   };
 
+  const urlToFile = async (url, filename, mimeType) => {
+    const res = await fetch(url);
+    const buffer = await res.arrayBuffer();
+    return new File([buffer], filename, { type: mimeType });
+  };
+
   // Upload handler
   const handleUpload = async (info) => {
     const { file } = info;
@@ -108,16 +180,31 @@ export default function SellectChannel() {
   };
 
   const queryClient = useQueryClient();
-  const { mutate: addChannal, isLoading } = useMutation(
-    (value) => PerfonaAdmin.createChannal(value),
+  const { mutate: editChannal, isLoading: mutateLoading } = useMutation(
+    (value) => PerfonaAdmin.checkChannel(channelId, value),
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries();
-        message.success("Kanal qo'shish birinchi qadam muvaffaqiyatli!");
+        message.success("Kanal qo'shish  muvaffaqiyatli!");
         setStepStatus(1);
-        SecureStorage.setItem("channelId", data?.data.id);
-        navigation("/admin/select_channel_two-step");
-        console.log(data.data.id);
+        navigation("admin/select_channel_two-step");
+        console.log(data);
+      },
+      onError: () => {
+        setCurrentStatus("error");
+        message.error("Xatolik yuz berdi. Qaytadan urinib ko'ring!");
+        console.log("Kanal yaratishning mutationida xatolik!");
+      },
+    }
+  );
+
+  const { mutate: editTariff } = useMutation(
+    (value) => PerfonaAdmin.checkTariff(channelId, value),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries();
+        message.success("Kanal qo'shish  muvaffaqiyatli!");
+        console.log(data);
       },
       onError: () => {
         setCurrentStatus("error");
@@ -135,8 +222,20 @@ export default function SellectChannel() {
       // Backendga yuborish (misol uchun)
 
       const formData = new FormData();
+      console.log(typeof values.photo);
 
-      formData.append("photo", values.photo.file);
+      if (values.photo?.file) {
+        formData.append("photo", values.photo.file);
+      } else if (typeof values.photo === "string") {
+        const photoFile = await urlToFile(
+          values.photo,
+          "image.webp",
+          "image/webp"
+        );
+        console.log(photoFile);
+        formData.append("photo", photoFile);
+      }
+
       values.category.forEach((id) => {
         formData.append("category_ids", id);
       });
@@ -147,11 +246,20 @@ export default function SellectChannel() {
       formData.append("about_video ", values.video_link);
       formData.append("is_active", "true");
 
+      const editTariffData = {
+        channel_id: channelId,
+        name: values.tariff_name,
+        price: values.price,
+        type: "subscription",
+        duration_days: values.editTariffData,
+      };
+
       for (let pair of formData.entries()) {
         console.log(`${pair[0]}: ${pair[1]}`);
       }
 
-      addChannal(formData);
+      editChannal(formData);
+      editTariff(editTariffData);
     } catch (error) {
       console.error("Xatolik:", error);
       message.error("Xatolik yuz berdi");
@@ -162,7 +270,7 @@ export default function SellectChannel() {
     console.log(`selected ${value}`);
   };
 
-  const { data } = useQuery(
+  const { data: categories } = useQuery(
     ["catrgories"],
     () => PerfonaAdmin.categoriesList(),
     {
@@ -171,12 +279,19 @@ export default function SellectChannel() {
     }
   );
 
-  const newDataOption = data?.data.map((item) => {
+  const newDataOption = categories?.data.map((item) => {
     return {
       label: item.name,
       value: item.id,
     };
   });
+
+  const onChange = (value) => {
+    console.log(`selected ${value}`);
+  };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
 
   return (
     <div id="addChannel">
@@ -209,12 +324,18 @@ export default function SellectChannel() {
           </div>
         </div>
 
-        {isLoading && (
-          <div className="absolute  inset-0 bg-white bg-opacity-60 z-10 flex items-center justify-center">
-            <div className="loader" />
-          </div>
-        )}
-        <Form name="select_channel" className="relative" onFinish={onFinish}>
+        {isLoading ||
+          (mutateLoading && (
+            <div className="absolute  inset-0 bg-white bg-opacity-60 z-10 flex items-center justify-center">
+              <div className="loader" />
+            </div>
+          ))}
+        <Form
+          name="select_channel"
+          className="relative"
+          onFinish={onFinish}
+          fields={fields}
+        >
           <div className="overlay relative">
             <div className="grid grid-cols-12 gap-4 ">
               <div className="chanal_img col-span-4 border border-[#E3E3E3] bg-[#FAFAFA] rounded-md p-4">
@@ -227,9 +348,10 @@ export default function SellectChannel() {
                       mode="multiple"
                       allowClear
                       style={{ width: "100%" }}
-                      placeholder="Please select"
+                      placeholder=""
                       onChange={handleChange}
                       options={newDataOption}
+                      defaultValue={["china"]}
                     />
                   </Form.Item>
                 </div>
@@ -258,7 +380,11 @@ export default function SellectChannel() {
                       </div>
                     )}
                   </div>
-                  <Form.Item name="photo" className="mt-3">
+                  <Form.Item
+                    name="photo"
+                    className="mt-3"
+                    getValueFromEvent={(e) => e.file}
+                  >
                     <Dragger
                       name="photo"
                       multiple={false}
@@ -317,6 +443,7 @@ export default function SellectChannel() {
                   >
                     <Input
                       type="text"
+                      value={channel?.data?.name}
                       className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
                     />
                   </Form.Item>
@@ -354,6 +481,54 @@ export default function SellectChannel() {
                     />
                   </Form.Item>
                 </div>
+                <div className="mt-4">
+                  <Form.Item
+                    name="tariff_name"
+                    label="Taʻrif nomi"
+                    className="col-span-1"
+                    layout="vertical"
+                    style={{
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Input
+                      type="text"
+                      className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                    />
+                  </Form.Item>
+                </div>
+                <div className="mt-4 flex gap-3">
+                  <Form.Item
+                    label="Taʻrif narxi"
+                    name="price"
+                    className="flex-1 "
+                    layout="vertical"
+                  >
+                    <Input
+                      type="text"
+                      className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Taʻrif davomiyligi"
+                    name="duration_days"
+                    className="flex-1"
+                    layout="vertical"
+                  >
+                    <Select
+                      showSearch
+                      placeholder=""
+                      optionFilterProp="label"
+                      onChange={onChange}
+                      onSearch={onSearch}
+                      options={[
+                        { label: "1 oylik", value: 1 },
+                        { label: "6 oylik", value: 6 },
+                        { label: "1 yillik", value: 12 },
+                      ]}
+                    />
+                  </Form.Item>
+                </div>
               </div>
             </div>
           </div>
@@ -362,7 +537,7 @@ export default function SellectChannel() {
               style={{ borderRadius: "6px" }}
               className="py-2.5 mb-4 w-[200px] bg-gradient-to-t from-[#0230C7] to-[#0097FF] border raunded-md text-white hover:shadow-md "
             >
-              Keyingi
+              Tasdiqlash
             </button>
           </div>
         </Form>
