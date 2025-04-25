@@ -305,7 +305,7 @@ export default function SellectCourse() {
                   Kurs maʻlumotlari
                 </h2>
                 <div className="mt-4">
-                  <Form.Item label="Kanal nomi" name="name" layout="vertical">
+                  <Form.Item label="Kurs nomi" name="name" layout="vertical">
                     <Input
                       type="text"
                       className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"

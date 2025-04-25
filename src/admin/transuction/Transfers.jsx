@@ -23,14 +23,14 @@ const data = [
   {
     key: "1",
     name: "John Brown",
-    date: "+998883921383",
+    date: "+998883923383",
     amount: "10.000 so'm",
     account: ["active"],
   },
   {
     key: "2",
     name: "Jim Green",
-    date: "+998883921383",
+    date: "+998884921583",
     amount: "10.000 so'm",
     account: ["loser"],
   },
@@ -139,7 +139,7 @@ export default function Transfers() {
                 <h3 className="text-[20px] font-medium">Balans</h3>
                 <p className="text-[12px]">Feb, 2025</p>
 
-                <p className="md:text-[30px] font-semibold my-2">$845075</p>
+                <p className="md:text-[30px] font-semibold my-2">$345075</p>
                 <p className="flex items-center gap-3">
                   <span className="text-white h-[24px]  flex gap-1 px-2 items-center justify-center text-[14px] bg-gradient-to-t rounded-md from-[#0230C7] to-[#0097FF]">
                     <IoIosTrendingUp />{" "}
@@ -153,10 +153,10 @@ export default function Transfers() {
             </div>
             <div className="card-img col-span-4 flex  items-stretch">
               <div className="p-6 rounded-[20px] bg-gradient-to-t from-[#0230C7] to-[#0097FF] text-white w-full h-full flex flex-col justify-between">
-                <p className="text-[30px] md:pt-[20px]">9860 0101 2511 5195</p>
+                <p className="text-[30px] md:pt-[20px]">9860 0101 3212 6534</p>
                 <div className="flex justify-between w-full items-end">
                   <div>
-                    <p>Nurzod Mardiyev</p>
+                    <p>John Brown</p>
                     <p>03/28</p>
                   </div>
                   <div className="text-[18px]">Humo</div>

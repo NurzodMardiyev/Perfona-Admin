@@ -1,21 +1,12 @@
 import { useEffect } from "react";
 import api from "./api"; // Axios instance
 import SecureStorage from "react-secure-storage";
-import { useLocation, useNavigate } from "react-router-dom";
-
 const TokenRefresher = () => {
-  const location = useLocation();
-  let navigate = useNavigate();
-
   useEffect(() => {
     const interval = setInterval(async () => {
       const refreshToken = SecureStorage.getItem("refreshToken");
-      console.log(refreshToken);
-      console.log(location.pathname);
+
       if (!refreshToken) {
-        if (location.pathname !== "/") {
-          navigate("/");
-        }
         return;
       }
 

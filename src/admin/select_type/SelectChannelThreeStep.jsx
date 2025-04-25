@@ -55,6 +55,7 @@ export default function SelectChannelThreeStep() {
       setTariff(tariffData);
       setChannel(data);
       setImagePreview(data?.data.photo);
+      setValueDesc(data?.data.about);
     }
   }, [data, tariffData]);
 
@@ -70,10 +71,6 @@ export default function SelectChannelThreeStep() {
     {
       name: ["video_link"],
       value: channel?.data?.about_video,
-    },
-    {
-      name: ["about"],
-      value: channel?.data?.description,
     },
     {
       name: ["category"],

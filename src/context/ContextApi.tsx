@@ -7,9 +7,10 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
-import { useLocation, Location } from "react-router-dom";
+import { useLocation, Location, useNavigate } from "react-router-dom";
 import { PerfonaAdmin } from "../feature/queries";
 import { message } from "antd";
+import SecureStorage from "react-secure-storage";
 
 // Tipni aniqlash
 interface category {
@@ -55,11 +56,13 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   // const [courses, setCourses] = useState([]);
   const [currentChannelId, setCurrentChannelId] = useState<number>();
   const location = useLocation();
-  // console.log(channels);
+  const navigate = useNavigate();
 
-  // console.log(collapsed);
-
-  const allowedPathname = ["/admin/select_channel", "/admin/select_course"];
+  const allowedPathname = [
+    "/admin/select_channel",
+    "/admin/select_course",
+    "/",
+  ];
 
   const queryClient = useQueryClient();
   const isHaveContent = useMutation(() => PerfonaAdmin.isHaveContent(), {
