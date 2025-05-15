@@ -67,16 +67,6 @@ export default function SellectCourse() {
     });
   };
 
-  // Rasmni base64 ga o'tkazish
-  // const convertToBase64 = (file) => {
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     reader.onload = () => resolve(reader.result);
-  //     reader.onerror = (error) => reject(error);
-  //   });
-  // };
-
   // Upload handler
   const handleUpload = async (info) => {
     const { file } = info;
@@ -126,8 +116,7 @@ export default function SellectCourse() {
     onSuccess: (data) => {
       queryClient.invalidateQueries();
       message.success("Kanal muvaffaqiyatli qo'shildi");
-      setStepStatus(1);
-      // navigation("admin/select_channel_two-step");
+      navigation("/admin/dashboard");
       console.log(data);
     },
     onError: () => {
@@ -152,12 +141,13 @@ export default function SellectCourse() {
         formData.append("category_ids", id);
       });
       // formData.append("category_ids ", values.category);
-      formData.append("course_link  ", values.link);
+      formData.append("link   ", values.link);
       formData.append("name", values.name);
       formData.append("description ", values.about);
       formData.append("about_video", values.video_link);
-      formData.append("price", values.price);
+      formData.append("type", "course");
       formData.append("is_active", "true");
+      formData.append("price", values.price);
 
       for (let pair of formData.entries()) {
         console.log(`${pair[0]}: ${pair[1]}`);
@@ -199,25 +189,6 @@ export default function SellectCourse() {
               Kurs qoʻshish
             </h1>
             <p className="">Yaxshi kontent obuna talab qiladi</p>
-          </div>
-          <div>
-            <Steps
-              labelPlacement="vertical"
-              current={stepStatus}
-              status={currentStatus}
-              // size="small"
-              items={[
-                {
-                  title: "Finished",
-                },
-                {
-                  title: "In Progress",
-                },
-                {
-                  title: "Waiting",
-                },
-              ]}
-            />
           </div>
         </div>
 

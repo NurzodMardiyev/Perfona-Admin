@@ -46,23 +46,19 @@ export const PerfonaAdmin = {
   },
   createChannal: async (value) => {
     const token = SecureStorage.getItem("accessToken");
-    const response = await axios.post(
-      `${apiBase}api/contents/channels/`,
-      value,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.post(`${apiBase}api/contents/`, value, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     return response.data;
   },
 
   createCourse: async (value) => {
     const token = SecureStorage.getItem("accessToken");
-    const response = await axios.post(`${apiBase}api/courses/courses/`, value, {
+    const response = await axios.post(`${apiBase}api/contents/`, value, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -85,29 +81,25 @@ export const PerfonaAdmin = {
   },
 
   getChannelData: async (id) => {
-    const response = await api.get(`api/contents/channels/${id}/`);
+    const response = await api.get(`api/contents/${id}/`);
 
     return response.data;
   },
 
   getTariffData: async (id) => {
     const response = await api.get(`api/payments/tariffs/${id}/`);
-
+    console.log(id);
     return response.data;
   },
 
   checkChannel: async (id, value) => {
     const token = SecureStorage.getItem("accessToken");
-    const response = await axios.patch(
-      `${apiBase}api/contents/channels/${id}/`,
-      value,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.patch(`${apiBase}api/contents/${id}/`, value, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   },
   checkTariff: async (id, value) => {

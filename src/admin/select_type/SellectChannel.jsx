@@ -140,8 +140,9 @@ export default function SellectChannel() {
       values.category.forEach((id) => {
         formData.append("category_ids", id);
       });
+      formData.append("type", "channel");
       // formData.append("category_ids ", values.category);
-      formData.append("channel_link ", values.link);
+      formData.append("link  ", values.link);
       formData.append("name", values.name);
       formData.append("description ", values.about);
       formData.append("about_video ", values.video_link);
@@ -196,13 +197,13 @@ export default function SellectChannel() {
               // size="small"
               items={[
                 {
-                  title: "Finished",
+                  title: "Kanal",
                 },
                 {
-                  title: "In Progress",
+                  title: "Tarif qo'shish",
                 },
                 {
-                  title: "Waiting",
+                  title: "Tekshirish",
                 },
               ]}
             />

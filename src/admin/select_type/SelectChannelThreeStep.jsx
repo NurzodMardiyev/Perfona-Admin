@@ -23,6 +23,7 @@ export default function SelectChannelThreeStep() {
   const [currentStatus, setCurrentStatus] = useState();
   const [channel, setChannel] = useState();
   const [tariff, setTariff] = useState();
+  const [successCount, setSuccessCount] = useState(0);
   const navigation = useNavigate();
 
   // malumotlarni get qilib olib kevolish
@@ -55,7 +56,7 @@ export default function SelectChannelThreeStep() {
       setTariff(tariffData);
       setChannel(data);
       setImagePreview(data?.data.photo);
-      setValueDesc(data?.data.about);
+      setValueDesc(data?.data.description);
     }
   }, [data, tariffData]);
 
@@ -66,7 +67,7 @@ export default function SelectChannelThreeStep() {
     },
     {
       name: ["link"],
-      value: channel?.data?.channel_link,
+      value: channel?.data?.link,
     },
     {
       name: ["video_link"],
@@ -77,12 +78,20 @@ export default function SelectChannelThreeStep() {
       value: channel?.data?.categories.map((cat) => cat.id),
     },
     {
-      name: ["photo"],
-      value: channel?.data?.photo,
+      name: ["about"],
+      value: valueDesc,
     },
     {
       name: ["tariff_name"],
-      value: tariff?.data?.photo,
+      value: tariff?.data?.name,
+    },
+    {
+      name: ["price"],
+      value: tariff?.data?.price,
+    },
+    {
+      name: ["duration_days"],
+      value: tariff?.data?.duration_days,
     },
   ];
 
@@ -182,14 +191,11 @@ export default function SelectChannelThreeStep() {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries();
-        message.success("Kanal qo'shish  muvaffaqiyatli!");
-        setStepStatus(1);
-        navigation("admin/select_channel_two-step");
+        setSuccessCount((prev) => prev + 1);
         console.log(data);
       },
       onError: () => {
         setCurrentStatus("error");
-        message.error("Xatolik yuz berdi. Qaytadan urinib ko'ring!");
         console.log("Kanal yaratishning mutationida xatolik!");
       },
     }
@@ -200,16 +206,22 @@ export default function SelectChannelThreeStep() {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries();
-        message.success("Kanal qo'shish  muvaffaqiyatli!");
+        setSuccessCount((prev) => prev + 1);
         console.log(data);
       },
       onError: () => {
         setCurrentStatus("error");
-        message.error("Xatolik yuz berdi. Qaytadan urinib ko'ring!");
         console.log("Kanal yaratishning mutationida xatolik!");
       },
     }
   );
+
+  useEffect(() => {
+    if (successCount === 2) {
+      message.success("Kanal tekshirish muvaffaqiyatli yakunlandi!");
+      navigation("/admin/dashboard");
+    }
+  }, [successCount]);
 
   // Formni yuborish
   const onFinish = async (values) => {
@@ -223,7 +235,10 @@ export default function SelectChannelThreeStep() {
 
       if (values.photo?.file) {
         formData.append("photo", values.photo.file);
-      } else if (typeof values.photo === "string") {
+      } else if (
+        typeof values.photo === "string" &&
+        !values.photo.startsWith("http")
+      ) {
         const photoFile = await urlToFile(
           values.photo,
           "image.webp",
@@ -236,15 +251,15 @@ export default function SelectChannelThreeStep() {
       values.category.forEach((id) => {
         formData.append("category_ids", id);
       });
-      // formData.append("category_ids ", values.category);
-      formData.append("channel_link ", values.link);
+      formData.append("type ", "channel");
+      formData.append("link ", values.link);
       formData.append("name", values.name);
       formData.append("description ", values.about);
       formData.append("about_video ", values.video_link);
       formData.append("is_active", "true");
 
       const editTariffData = {
-        channel_id: channelId,
+        content_id: channelId,
         name: values.tariff_name,
         price: values.price,
         type: "subscription",
@@ -308,13 +323,13 @@ export default function SelectChannelThreeStep() {
               // size="small"
               items={[
                 {
-                  title: "Finished",
+                  title: "Kanal",
                 },
                 {
-                  title: "In Progress",
+                  title: "Tarif qo'shish",
                 },
                 {
-                  title: "Waiting",
+                  title: "Tekshirish",
                 },
               ]}
             />

@@ -1,23 +1,19 @@
-import { Col, Input, Form, Flex, Button, Space, Steps } from "antd";
+import { Input, Form, Steps } from "antd";
 import "../../App.css";
-import { message, Upload, Select } from "antd";
-import { TiUpload } from "react-icons/ti";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
-const { Dragger } = Upload;
-import ReactQuill from "react-quill";
+import { message, Select } from "antd";
+import { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { PerfonaAdmin } from "../../feature/queries";
 import SecureStorage from "react-secure-storage";
-import { ModalContext } from "../../context/ContextApi";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineMinusCircle } from "react-icons/ai";
 
 export default function SellectChannelTwoStep() {
   const [channel, setChannel] = useState();
   const [stepStatus, setStepStatus] = useState(1);
   const [currentStatus, setCurrentStatus] = useState();
+  const [addTariffBtn, setAddTariffBtn] = useState(0);
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
@@ -25,7 +21,7 @@ export default function SellectChannelTwoStep() {
     (value) => PerfonaAdmin.addTariff(value),
     {
       onSuccess: (data) => {
-        message.success("Kanal qo'shish birinchi qadam muvaffaqiyatli!");
+        message.success("Kanal qo'shish ikkinchi qadam muvaffaqiyatli!");
         queryClient.invalidateQueries();
         setStepStatus(2);
         navigate("/admin/select_channel_three-step");
@@ -40,9 +36,33 @@ export default function SellectChannelTwoStep() {
   );
   // Formni yuborish
   const onFinish = async (values) => {
-    const obj = { ...values, type: "subscription" };
-    console.log(obj);
-    addTariff(obj);
+    const obj1 = {
+      name: values.name,
+      content_id: values.content_id,
+      type: "subscription",
+      duration_days: values.duration_days,
+      price: values.price,
+    };
+    const obj2 = {
+      name: values.name2,
+      content_id: values.content_id,
+      type: "subscription",
+      duration_days: values.duration_days2,
+      price: values.price2,
+    };
+    const obj3 = {
+      name: values.name3,
+      content_id: values.content_id,
+      type: "subscription",
+      duration_days: values.duration_days3,
+      price: values.price3,
+    };
+    addTariff(obj1);
+    if (addTariffBtn === 1) {
+      addTariff(obj2);
+    } else if (addTariffBtn === 2) {
+      addTariff(obj3);
+    }
   };
 
   const onChange = (value) => {
@@ -94,13 +114,13 @@ export default function SellectChannelTwoStep() {
               // size="small"
               items={[
                 {
-                  title: "Finished",
+                  title: "Kanal",
                 },
                 {
-                  title: "In Progress",
+                  title: "Tarif qo'shish",
                 },
                 {
-                  title: "Waiting",
+                  title: "Tekshirish",
                 },
               ]}
             />
@@ -120,7 +140,7 @@ export default function SellectChannelTwoStep() {
                   Kanal
                 </h2>
                 <div className="mt-3">
-                  <Form.Item label="Kanal tanlang" name="channel_id">
+                  <Form.Item label="Kanal tanlang" name="content_id">
                     <Select
                       showSearch
                       placeholder=""
@@ -167,7 +187,7 @@ export default function SellectChannelTwoStep() {
                   </Form.Item>
                   <Form.Item
                     label="Taʻrif davomiyligi"
-                    // name="duration_days"
+                    name="duration_days"
                     className="flex-1"
                     layout="vertical"
                   >
@@ -184,6 +204,146 @@ export default function SellectChannelTwoStep() {
                       ]}
                     />
                   </Form.Item>
+                </div>
+                {addTariffBtn >= 1 && (
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <div className="mt-4">
+                        <Form.Item
+                          name="name2"
+                          label="Ikkinchi taʻrif nomi"
+                          className="col-span-1"
+                          layout="vertical"
+                          style={{
+                            marginBottom: 10,
+                          }}
+                        >
+                          <Input
+                            type="text"
+                            className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                          />
+                        </Form.Item>
+                      </div>
+                      <div className="mt-4 flex gap-3">
+                        <Form.Item
+                          label="Ikkinchi taʻrif narxi"
+                          name="price2"
+                          className="flex-1 "
+                          layout="vertical"
+                        >
+                          <Input
+                            type="text"
+                            className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          label="Ikkinchi taʻrif davomiyligi"
+                          name="duration_days2"
+                          className="flex-1"
+                          layout="vertical"
+                        >
+                          <Select
+                            showSearch
+                            placeholder=""
+                            optionFilterProp="label"
+                            onChange={onChange}
+                            onSearch={onSearch}
+                            options={[
+                              { label: "1 oylik", value: 1 },
+                              { label: "6 oylik", value: 6 },
+                              { label: "1 yillik", value: 12 },
+                            ]}
+                          />
+                        </Form.Item>
+                      </div>
+                    </div>
+                    <div className="text-[22px] p-[10px] h-[100px] ">
+                      <AiOutlineMinusCircle
+                        className="cursor-pointer"
+                        onClick={() => setAddTariffBtn(addTariffBtn - 1)}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {addTariffBtn >= 2 && (
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <div className="mt-4">
+                        <Form.Item
+                          name="name3"
+                          label="Uchinchi taʻrif nomi"
+                          className="col-span-1"
+                          layout="vertical"
+                          style={{
+                            marginBottom: 10,
+                          }}
+                        >
+                          <Input
+                            type="text"
+                            className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                          />
+                        </Form.Item>
+                      </div>
+                      <div className="mt-4 flex gap-3">
+                        <Form.Item
+                          label="Uchinchi taʻrif narxi"
+                          name="price3"
+                          className="flex-1 "
+                          layout="vertical"
+                        >
+                          <Input
+                            type="text"
+                            className="w-full h-[39px] border-[#E3E3E3] focus:outline-none focus:ring-0 hover:ring-0"
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          label="Uchinchi taʻrif davomiyligi"
+                          name="duration_days3"
+                          className="flex-1"
+                          layout="vertical"
+                        >
+                          <Select
+                            showSearch
+                            placeholder=""
+                            optionFilterProp="label"
+                            onChange={onChange}
+                            onSearch={onSearch}
+                            options={[
+                              { label: "1 oylik", value: 1 },
+                              { label: "6 oylik", value: 6 },
+                              { label: "1 yillik", value: 12 },
+                            ]}
+                          />
+                        </Form.Item>
+                      </div>
+                    </div>
+                    <div className="text-[22px] p-[10px] h-[100px] ">
+                      <AiOutlineMinusCircle
+                        className="cursor-pointer"
+                        onClick={() => setAddTariffBtn(addTariffBtn - 1)}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <button
+                    style={{ borderRadius: "6px" }}
+                    className={`py-2 mb-4 w-full mt-3 bg-gradient-to-t ${
+                      addTariffBtn > 1
+                        ? "from-[#a9bdff] to-[#7aa8c6] cursor-default"
+                        : "from-[#0230C7] to-[#0097FF]"
+                    }  border raunded-md text-white hover:shadow-md`}
+                    onClick={() => {
+                      if (addTariffBtn < 2) {
+                        setAddTariffBtn(addTariffBtn + 1);
+                      }
+                    }}
+                    type="button"
+                  >
+                    Qoʻshish
+                  </button>
                 </div>
               </div>
             </div>
